@@ -1,0 +1,5 @@
+cuda_add_executable(tex1d_test main.cu)
+target_link_libraries(tex1d_test common_lib)
+target_link_libraries(tex1d_test math_lib)
+target_link_libraries(tex1d_test solver_lib)
+target_link_libraries(tex1d_test ${CUDA_CUBLAS_LIBRARIES})

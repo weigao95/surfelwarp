@@ -1,0 +1,6 @@
+file(GLOB IMGPROC_CHECKER_SRC *.h *.hpp *.cpp *.cu)
+cuda_add_executable(imgproc_test ${IMGPROC_CHECKER_SRC})
+target_link_libraries(imgproc_test common_lib)
+target_link_libraries(imgproc_test math_lib)
+target_link_libraries(imgproc_test imgproc_lib)
+target_link_libraries(imgproc_test visualization_lib)

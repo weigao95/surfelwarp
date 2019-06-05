@@ -1,0 +1,7 @@
+file(GLOB GEOMETRY_TEST_SRC *.h *.hpp *.cpp *.cu)
+cuda_add_executable(geometry_test ${GEOMETRY_TEST_SRC})
+target_link_libraries(geometry_test common_lib)
+target_link_libraries(geometry_test math_lib)
+target_link_libraries(geometry_test imgproc_lib)
+target_link_libraries(geometry_test core_lib)
+target_link_libraries(geometry_test visualization_lib)

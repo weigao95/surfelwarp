@@ -1,0 +1,624 @@
+#include "common/data_transfer.h"
+#include "common/common_utils.h"
+#include "common/encode_utils.h"
+#include "common/logging.h"
+#include "common/common_texture_utils.h"
+#include "math/vector_ops.hpp"
+#include <assert.h>
+#include <Eigen/Eigen>
+#include <device_launch_parameters.h>
+
+cv::Mat surfelwarp::downloadDepthImage(const DeviceArray2D<unsigned short>& image_gpu)
+{
+	const auto num_rows = image_gpu.rows();
+	const auto num_cols = image_gpu.cols();
+	cv::Mat depth_cpu(num_rows, num_cols, CV_16UC1);
+	image_gpu.download(depth_cpu.data, sizeof(unsigned short) * num_cols);
+	return depth_cpu;
+}
+
+cv::Mat surfelwarp::downloadDepthImage(cudaTextureObject_t image_gpu)
+{
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(image_gpu, width, height);
+	DeviceArray2D<unsigned short> map;
+	map.create(height, width);
+
+	//Transfer and download
+	textureToMap2D<unsigned short>(image_gpu, map);
+	return downloadDepthImage(map);
+}
+
+cv::Mat surfelwarp::downloadRGBImage(
+	const DeviceArray<uchar3>& image_gpu, 
+	const unsigned rows, const unsigned cols
+) {
+	assert(rows * cols == image_gpu.size());
+	cv::Mat rgb_cpu(rows, cols, CV_8UC3);
+	image_gpu.download((uchar3*)(rgb_cpu.data));
+	return rgb_cpu;
+}
+
+cv::Mat surfelwarp::downloadNormalizeRGBImage(const DeviceArray2D<float4>& rgb_img)
+{
+	cv::Mat rgb_cpu(rgb_img.rows(), rgb_img.cols(), CV_32FC4);
+	rgb_img.download(rgb_cpu.data, sizeof(float4) * rgb_img.cols());
+	return rgb_cpu;
+}
+
+cv::Mat surfelwarp::downloadNormalizeRGBImage(cudaTextureObject_t rgb_img)
+{
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(rgb_img, width, height);
+	DeviceArray2D<float4> map;
+	map.create(height, width);
+
+	//Transfer and download
+	textureToMap2D<float4>(rgb_img, map);
+	return downloadNormalizeRGBImage(map);
+}
+
+cv::Mat surfelwarp::rgbImageFromColorTimeMap(cudaTextureObject_t color_time_map)
+{
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(color_time_map, width, height);
+
+	//First download to device array
+	DeviceArray2D<float4> map;
+	map.create(height, width);
+	textureToMap2D<float4>(color_time_map, map);
+
+	//Donwload to host
+	std::vector<float4> color_time_host;
+	int cols = width;
+	map.download(color_time_host, cols);
+
+	cv::Mat rgb_cpu(height, width, CV_8UC3);
+	for(auto i = 0; i < width; i++) {
+		for(auto j = 0; j < height; j++) {
+			const auto flatten_idx = i + j * width;
+			const float4 color_time_value = color_time_host[flatten_idx];
+			uchar3 rgb_value;
+			float_decode_rgb(color_time_value.x, rgb_value);
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 0) = rgb_value.x;
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 1) = rgb_value.y;
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 2) = rgb_value.z;
+		}
+	}
+	return rgb_cpu;
+}
+
+cv::Mat surfelwarp::normalMapForVisualize(cudaTextureObject_t normal_map) {
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(normal_map, width, height);
+	
+	//First download to device array
+	DeviceArray2D<float4> map;
+	map.create(height, width);
+	textureToMap2D<float4>(normal_map, map);
+	
+	//Donwload to host
+	std::vector<float4> normal_map_host;
+	int cols = width;
+	map.download(normal_map_host, cols);
+	
+	cv::Mat rgb_cpu(height, width, CV_8UC3);
+	for(auto i = 0; i < width; i++) {
+		for(auto j = 0; j < height; j++) {
+			const auto flatten_idx = i + j * width;
+			const float4 normal_value = normal_map_host[flatten_idx];
+			uchar3 rgb_value;
+			rgb_value.x = (unsigned char)((normal_value.x + 1) * 120.0f);
+			rgb_value.y = (unsigned char)((normal_value.y + 1) * 120.0f);
+			rgb_value.z = (unsigned char)((normal_value.z + 1) * 120.0f);
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 0) = rgb_value.x;
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 1) = rgb_value.y;
+			rgb_cpu.at<unsigned char>(j, sizeof(uchar3) * i + 2) = rgb_value.z;
+		}
+	}
+	return rgb_cpu;
+}
+
+void surfelwarp::downloadSegmentationMask(cudaTextureObject_t mask, std::vector<unsigned char>& h_mask)
+{
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(mask, width, height);
+
+	//Download it to device
+	DeviceArray2D<unsigned char> d_mask;
+	d_mask.create(height, width);
+	textureToMap2D<unsigned char>(mask, d_mask);
+
+	//Download it to host
+	int h_cols;
+	d_mask.download(h_mask, h_cols);
+}
+
+cv::Mat surfelwarp::downloadRawSegmentationMask(cudaTextureObject_t mask) {
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(mask, width, height);
+	
+	//Download it to device
+	DeviceArray2D<unsigned char> d_mask;
+	d_mask.create(height, width);
+	textureToMap2D<unsigned char>(mask, d_mask);
+	
+	//Download it to host
+	std::vector<unsigned char> h_mask_vec;
+	int h_cols;
+	d_mask.download(h_mask_vec, h_cols);
+	
+	cv::Mat raw_mask(height, width, CV_8UC1);
+	for(auto row = 0; row < height; row++) {
+		for(auto col = 0; col < width; col++) {
+			const auto offset = col + row * width;
+			raw_mask.at<unsigned char>(row, col) = h_mask_vec[offset];
+		}
+	}
+	
+	return raw_mask;
+}
+
+void surfelwarp::downloadGrayScaleImage(cudaTextureObject_t image, cv::Mat &h_image, float scale) {
+	//Query the size of texture
+	unsigned width = 0, height = 0;
+	query2DTextureExtent(image, width, height);
+	
+	//Download it to device
+	DeviceArray2D<float> d_meanfield;
+	d_meanfield.create(height, width);
+	textureToMap2D<float>(image, d_meanfield);
+	
+	//To host
+	cv::Mat h_meanfield_prob = cv::Mat(height, width, CV_32FC1);
+	d_meanfield.download(h_meanfield_prob.data, sizeof(float) * width);
+	
+	//Transfer it
+	h_meanfield_prob.convertTo(h_image, CV_8UC1, scale * 255.f);
+}
+
+
+void surfelwarp::downloadTransferBinaryMeanfield(cudaTextureObject_t meanfield_q, cv::Mat & h_meanfield_uchar) {
+	downloadGrayScaleImage(meanfield_q, h_meanfield_uchar);
+}
+
+/* The point cloud downloading method
+ */
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(const surfelwarp::DeviceArray<float4> &vertex) {
+	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	std::vector<float4> h_vertex;
+	vertex.download(h_vertex);
+	for(auto idx = 0; idx < vertex.size(); idx++) {
+		pcl::PointXYZ point;
+		point.x = h_vertex[idx].x * 1000;
+		point.y = h_vertex[idx].y * 1000;
+		point.z = h_vertex[idx].z * 1000;
+		//if(std::abs(point.x > 1e-3) || std::abs(point.y > 1e-3) || std::abs(point.z > 1e-3))
+		point_cloud->points.push_back(point);
+	}
+	return point_cloud;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(const DeviceArray2D<float4>& vertex_map)
+{
+	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	const auto num_rows = vertex_map.rows();
+	const auto num_cols = vertex_map.cols();
+	const auto total_size = num_cols * num_rows;
+	float4* host_ptr = new float4[total_size];
+	vertex_map.download(host_ptr, num_cols * sizeof(float4));
+	size_t valid_count = 0;
+	for (int idx = 0; idx < total_size; idx += 1) {
+		pcl::PointXYZ point;
+		point.x = host_ptr[idx].x * 1000;
+		point.y = host_ptr[idx].y * 1000;
+		point.z = host_ptr[idx].z * 1000;
+		if(std::abs(point.x > 1e-3) || std::abs(point.y > 1e-3) || std::abs(point.z > 1e-3)) {
+			valid_count++;
+		}
+		point_cloud->points.push_back(point);
+	}
+	//LOG(INFO) << "The number of valid point cloud is " << valid_count << std::endl;
+	delete[] host_ptr;
+	return point_cloud;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(
+	const DeviceArray2D<float4> &vertex_map,
+	DeviceArrayView<unsigned int> indicator)
+{
+	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	const auto num_rows = vertex_map.rows();
+	const auto num_cols = vertex_map.cols();
+	const auto total_size = num_cols * num_rows;
+	float4* host_ptr = new float4[total_size];
+	vertex_map.download(host_ptr, num_cols * sizeof(float4));
+	
+	std::vector<unsigned> h_indicator;
+	indicator.Download(h_indicator);
+	
+	for (int idx = 0; idx < total_size; idx += 1) {
+		pcl::PointXYZ point;
+		point.x = host_ptr[idx].x * 1000;
+		point.y = host_ptr[idx].y * 1000;
+		point.z = host_ptr[idx].z * 1000;
+		if(h_indicator[idx])
+			point_cloud->points.push_back(point);
+	}
+	//LOG(INFO) << "The number of valid point cloud is " << valid_count << std::endl;
+	delete[] host_ptr;
+	return point_cloud;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(
+	const DeviceArray2D<float4> &vertex_map,
+	DeviceArrayView<ushort2> pixel
+) {
+	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	const auto num_rows = vertex_map.rows();
+	const auto num_cols = vertex_map.cols();
+	const auto total_size = num_cols * num_rows;
+	float4* host_ptr = new float4[total_size];
+	vertex_map.download(host_ptr, num_cols * sizeof(float4));
+	
+	std::vector<ushort2> h_pixels;
+	pixel.Download(h_pixels);
+	for(auto i = 0; i < h_pixels.size(); i++) {
+		const auto idx = h_pixels[i].x + h_pixels[i].y * vertex_map.cols();
+		pcl::PointXYZ point;
+		point.x = host_ptr[idx].x * 1000;
+		point.y = host_ptr[idx].y * 1000;
+		point.z = host_ptr[idx].z * 1000;
+		point_cloud->points.push_back(point);
+	}
+	delete[] host_ptr;
+	return point_cloud;
+}
+
+void surfelwarp::downloadPointCloud(const DeviceArray2D<float4>& vertex_map, std::vector<float4>& point_cloud)
+{
+	point_cloud.clear();
+	const auto num_rows = vertex_map.rows();
+	const auto num_cols = vertex_map.cols();
+	const auto total_size = num_cols * num_rows;
+	float4* host_ptr = new float4[total_size];
+	vertex_map.download(host_ptr, num_cols * sizeof(float4));
+	for (int idx = 0; idx < total_size; idx += 1) {
+		float4 point;
+		point.x = host_ptr[idx].x;
+		point.y = host_ptr[idx].y;
+		point.z = host_ptr[idx].z;
+		if (std::abs(point.x > 1e-3) || std::abs(point.y > 1e-3) || std::abs(point.z > 1e-3))
+			point_cloud.push_back(point);
+	}
+	delete[] host_ptr;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(cudaTextureObject_t vertex_map)
+{
+	unsigned rows, cols;
+	query2DTextureExtent(vertex_map, cols, rows);
+	DeviceArray2D<float4> vertex_map_array;
+	vertex_map_array.create(rows, cols);
+	textureToMap2D<float4>(vertex_map, vertex_map_array);
+	return downloadPointCloud(vertex_map_array);
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<unsigned int> indicator) {
+	unsigned rows, cols;
+	query2DTextureExtent(vertex_map, cols, rows);
+	DeviceArray2D<float4> vertex_map_array;
+	vertex_map_array.create(rows, cols);
+	textureToMap2D<float4>(vertex_map, vertex_map_array);
+	return downloadPointCloud(vertex_map_array, indicator);
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr surfelwarp::downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<ushort2> pixel) {
+	unsigned rows, cols;
+	query2DTextureExtent(vertex_map, cols, rows);
+	DeviceArray2D<float4> vertex_map_array;
+	vertex_map_array.create(rows, cols);
+	textureToMap2D<float4>(vertex_map, vertex_map_array);
+	return downloadPointCloud(vertex_map_array, pixel);
+}
+
+void surfelwarp::downloadPointCloud(cudaTextureObject_t vertex_map, std::vector<float4>& point_cloud)
+{
+	unsigned rows, cols;
+	query2DTextureExtent(vertex_map, cols, rows);
+	DeviceArray2D<float4> vertex_map_array;
+	vertex_map_array.create(rows, cols);
+	textureToMap2D<float4>(vertex_map, vertex_map_array);
+	downloadPointCloud(vertex_map_array, point_cloud);
+}
+
+
+pcl::PointCloud<pcl::Normal>::Ptr surfelwarp::downloadNormalCloud(const DeviceArray<float4> &d_normal) {
+	pcl::PointCloud<pcl::Normal>::Ptr normal_cloud(new pcl::PointCloud<pcl::Normal>());
+	std::vector<float4> h_normal;
+	d_normal.download(h_normal);
+	for(auto idx = 0; idx < d_normal.size(); idx++) {
+		pcl::Normal normal;
+		normal.normal_x = h_normal[idx].x;
+		normal.normal_y = h_normal[idx].y;
+		normal.normal_z = h_normal[idx].z;
+		normal_cloud->points.push_back(normal);
+	}
+	return  normal_cloud;
+}
+
+pcl::PointCloud<pcl::Normal>::Ptr surfelwarp::downloadNormalCloud(const DeviceArray2D<float4>& normal_map)
+{
+	pcl::PointCloud<pcl::Normal>::Ptr normal_cloud(new pcl::PointCloud<pcl::Normal>());
+	const auto num_rows = normal_map.rows();
+	const auto num_cols = normal_map.cols();
+	const auto total_size = num_cols * num_rows;
+	float4* host_ptr = new float4[total_size];
+	normal_map.download(host_ptr, num_cols * sizeof(float4));
+	int valid_count = 0;
+	for (int idx = 0; idx < total_size; idx += 1) {
+		pcl::Normal normal;
+		float4 normal_dev = host_ptr[idx];
+		normal.normal_x = normal_dev.x;
+		normal.normal_y = normal_dev.y;
+		normal.normal_z = normal_dev.z;
+		if(norm(make_float3(host_ptr[idx].x, host_ptr[idx].y, host_ptr[idx].z)) > 1e-4) {
+			valid_count++;
+		}
+		SURFELWARP_CHECK(!isnan(normal_dev.x));
+		SURFELWARP_CHECK(!isnan(normal_dev.y));
+		SURFELWARP_CHECK(!isnan(normal_dev.z));
+		normal_cloud->points.push_back(normal);
+	}
+	//LOG(INFO) << "The number of valid normals is " << valid_count;
+	delete[] host_ptr;
+	return normal_cloud;
+}
+
+void surfelwarp::downloadPointNormalCloud(
+	const surfelwarp::DeviceArray<DepthSurfel> &surfel_array,
+	pcl::PointCloud<pcl::PointXYZ>::Ptr &point_cloud,
+	pcl::PointCloud<pcl::Normal>::Ptr &normal_cloud,
+	const float point_scale
+) {
+	//Prepare the data
+	point_cloud = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>);
+	normal_cloud = pcl::PointCloud<pcl::Normal>::Ptr(new pcl::PointCloud<pcl::Normal>());
+	
+	//Download it
+	std::vector<DepthSurfel> surfel_array_host;
+	surfel_array.download(surfel_array_host);
+	
+	//Construct the output
+	for(auto i = 0; i < surfel_array_host.size(); i++) {
+		DepthSurfel surfel = surfel_array_host[i];
+		pcl::PointXYZ point;
+		point.x = surfel.vertex_confid.x * point_scale;
+		point.y = surfel.vertex_confid.y * point_scale;
+		point.z = surfel.vertex_confid.z * point_scale;
+		
+		pcl::Normal normal;
+		normal.normal_x = surfel.normal_radius.x;
+		normal.normal_y = surfel.normal_radius.y;
+		normal.normal_z = surfel.normal_radius.z;
+		point_cloud->points.push_back(point);
+		normal_cloud->points.push_back(normal);
+	}
+}
+
+pcl::PointCloud<pcl::Normal>::Ptr surfelwarp::downloadNormalCloud(cudaTextureObject_t normal_map)
+{
+	unsigned rows, cols;
+	query2DTextureExtent(normal_map, cols, rows);
+	DeviceArray2D<float4> normal_map_array;
+	normal_map_array.create(rows, cols);
+	textureToMap2D<float4>(normal_map, normal_map_array);
+	return downloadNormalCloud(normal_map_array);
+}
+
+
+void surfelwarp::separateDownloadPointCloud(const surfelwarp::DeviceArrayView<float4> &point_cloud,
+                                            const surfelwarp::DeviceArrayView<unsigned int> &indicator,
+                                            pcl::PointCloud<pcl::PointXYZ> &fused_cloud,
+                                            pcl::PointCloud<pcl::PointXYZ> &unfused_cloud) {
+	std::vector<float4> h_surfels;
+	std::vector<unsigned> h_indicator;
+	point_cloud.Download(h_surfels);
+	indicator.Download(h_indicator);
+	SURFELWARP_CHECK(h_indicator.size() == h_surfels.size());
+	
+	for(auto i = 0; i < h_surfels.size(); i++) {
+		const auto indicator = h_indicator[i];
+		const auto flat_point = h_surfels[i];
+		pcl::PointXYZ point;
+		point.x = flat_point.x * 1000;
+		point.y = flat_point.y * 1000;
+		point.z = flat_point.z * 1000;
+		
+		if(indicator > 0) {
+			fused_cloud.points.push_back(point);
+		}
+		else {
+			unfused_cloud.points.push_back(point);
+		}
+	}
+}
+
+void surfelwarp::separateDownloadPointCloud(
+	const surfelwarp::DeviceArrayView<float4> &point_cloud,
+	unsigned num_remaining_surfels,
+	pcl::PointCloud<pcl::PointXYZ> &remaining_cloud,
+	pcl::PointCloud<pcl::PointXYZ> &appended_cloud
+) {
+	//Clear the existing point cloud
+	remaining_cloud.points.clear();
+	appended_cloud.points.clear();
+	
+	std::vector<float4> h_surfels;
+	point_cloud.Download(h_surfels);
+	for(auto i = 0; i < point_cloud.Size(); i++) {
+		const auto flat_point = h_surfels[i];
+		pcl::PointXYZ point;
+		point.x = flat_point.x * 1000;
+		point.y = flat_point.y * 1000;
+		point.z = flat_point.z * 1000;
+		
+		if(i < num_remaining_surfels) {
+			remaining_cloud.points.push_back(point);
+		} else {
+			appended_cloud.points.push_back(point);
+		}
+	}
+}
+
+
+/* The download function for colored point cloud
+ */
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr
+surfelwarp::downloadColoredPointCloud(
+	const surfelwarp::DeviceArray<float4> &vertex_confid,
+	const surfelwarp::DeviceArray<float4> &color_time
+) {
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+	std::vector<float4> h_vertex, h_color_time;
+	vertex_confid.download(h_vertex);
+	color_time.download(h_color_time);
+	SURFELWARP_CHECK_EQ(h_vertex.size(), h_color_time.size());
+	for(auto idx = 0; idx < h_vertex.size(); idx++) {
+		pcl::PointXYZRGB point;
+		point.x = h_vertex[idx].x * 1000;
+		point.y = h_vertex[idx].y * 1000;
+		point.z = h_vertex[idx].z * 1000;
+		
+		float encoded_rgb = h_color_time[idx].x;
+		uchar3 rgb;
+		float_decode_rgb(encoded_rgb, rgb);
+		point.r = rgb.x;
+		point.g = rgb.y;
+		point.b = rgb.z;
+
+		point_cloud->points.push_back(point);
+	}
+	return point_cloud;
+}
+
+
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr
+surfelwarp::downloadColoredPointCloud(
+	cudaTextureObject_t vertex_map,
+	cudaTextureObject_t color_time_map,
+	bool flip_color
+) {
+	unsigned rows, cols;
+	query2DTextureExtent(vertex_map, cols, rows);
+	DeviceArray2D<float4> vertex_map_array, color_map_array;
+	vertex_map_array.create(rows, cols);
+	color_map_array.create(rows, cols);
+	textureToMap2D<float4>(vertex_map, vertex_map_array);
+	textureToMap2D<float4>(color_time_map, color_map_array);
+	
+	//Download it
+	float4* h_vertex = new float4[rows * cols];
+	float4* h_color_time = new float4[rows * cols];
+	vertex_map_array.download(h_vertex, cols * sizeof(float4));
+	color_map_array.download(h_color_time, cols * sizeof(float4));
+	
+	//Construct the point cloud
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr point_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+	for(auto i = 0; i < rows * cols; i++) {
+		pcl::PointXYZRGB point;
+		point.x = h_vertex[i].x * 1000;
+		point.y = h_vertex[i].y * 1000;
+		point.z = h_vertex[i].z * 1000;
+		
+		float encoded_rgb = h_color_time[i].x;
+		uchar3 rgb;
+		float_decode_rgb(encoded_rgb, rgb);
+
+		if(flip_color) {
+			point.r = rgb.z;
+			point.g = rgb.y;
+			point.b = rgb.x;
+		} else {
+			point.r = rgb.x;
+			point.g = rgb.y;
+			point.b = rgb.z;
+		}
+		
+		point_cloud->points.push_back(point);
+	}
+	
+	delete[] h_vertex;
+	delete[] h_color_time;
+	return point_cloud;
+}
+
+
+//The method to add color to point cloud
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr surfelwarp::addColorToPointCloud(
+	const pcl::PointCloud<pcl::PointXYZ>::Ptr &point_cloud,
+	uchar4 rgba
+) {
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr color_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+	for(auto i = 0; i < point_cloud->points.size(); i++) {
+		const auto& point_xyz = point_cloud->points[i];
+		
+		//Construct the color point
+		pcl::PointXYZRGB color_point;
+		color_point.x = point_xyz.x;
+		color_point.y = point_xyz.y;
+		color_point.z = point_xyz.z;
+		
+		//The color
+		color_point.r = rgba.x;
+		color_point.g = rgba.y;
+		color_point.b = rgba.z;
+		
+		color_cloud->points.push_back(color_point);
+	}
+	return color_cloud;
+}
+
+/* The index map query methods
+ */
+namespace surfelwarp { namespace device {
+	
+	__global__ void queryIndexMapFromPixelKernel(
+		cudaTextureObject_t index_map,
+		const DeviceArrayView<ushort4> pixel_array,
+		unsigned* index_array
+	) {
+		const auto idx = threadIdx.x + blockDim.x * blockIdx.x;
+		if(idx < pixel_array.Size())
+		{
+			const auto x = pixel_array[idx].x;
+			const auto y = pixel_array[idx].y;
+			const auto index = tex2D<unsigned>(index_map, x, y);
+			index_array[idx] = index;
+		}
+	}
+
+
+} // namespace device
+} // namespace surfelwarp
+
+
+void surfelwarp::queryIndexMapFromPixels(
+	cudaTextureObject_t index_map, 
+	const DeviceArrayView<ushort4>& pixel_array, 
+	DeviceArray<unsigned>& index_array
+) {
+	//Simple sanity check
+	SURFELWARP_CHECK_EQ(pixel_array.Size(), index_array.size());
+
+	//Invoke the kernel
+	dim3 blk(256);
+	dim3 grid(pixel_array.Size(), blk.x);
+	device::queryIndexMapFromPixelKernel<<<grid, blk>>>(index_map, pixel_array, index_array);
+}

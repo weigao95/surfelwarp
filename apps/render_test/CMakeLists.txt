@@ -1,0 +1,7 @@
+file(GLOB RENDER_TEST_SRC *.h *.hpp *.cpp *.cu)
+cuda_add_executable(renderer_test ${RENDER_TEST_SRC})
+target_link_libraries(renderer_test common_lib)
+target_link_libraries(renderer_test math_lib)
+target_link_libraries(renderer_test imgproc_lib)
+target_link_libraries(renderer_test core_lib)
+target_link_libraries(renderer_test visualization_lib)

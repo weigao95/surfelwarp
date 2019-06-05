@@ -1,0 +1,6 @@
+file(GLOB IMGPROC_APP_SRC *.h *.hpp *.cpp *.cu)
+cuda_add_executable(imgproc_app ${IMGPROC_APP_SRC})
+target_link_libraries(imgproc_app common_lib)
+target_link_libraries(imgproc_app math_lib)
+target_link_libraries(imgproc_app imgproc_lib)
+target_link_libraries(imgproc_app visualization_lib)

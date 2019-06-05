@@ -1,0 +1,5 @@
+cuda_add_executable(cublas_test main.cpp)
+target_link_libraries(cublas_test common_lib)
+target_link_libraries(cublas_test math_lib)
+target_link_libraries(cublas_test solver_lib)
+target_link_libraries(cublas_test ${CUDA_CUBLAS_LIBRARIES})

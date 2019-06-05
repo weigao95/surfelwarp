@@ -1,0 +1,7 @@
+file(GLOB COMMON_SRC *.h *.hpp *.cuh *.cpp *.cu containers/*.hpp containers/*.cpp)
+source_group("src" FILES ${COMMON_SRC})
+cuda_add_library(common_lib ${COMMON_SRC})
+target_link_libraries(common_lib ${OpenCV_LIBRARIES})
+target_link_libraries(common_lib ${PCL_COMMON_LIBRARIES})
+target_link_libraries(common_lib ${Boost_FILESYSTEM_LIBRARY})
+target_link_libraries(common_lib cuda)

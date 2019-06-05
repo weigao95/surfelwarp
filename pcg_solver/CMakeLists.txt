@@ -1,0 +1,7 @@
+file(GLOB SOLVER_SRC *.h *.hpp *cuh *.cpp *.cu)
+source_group("src" FILES ${SOLVER_SRC})
+cuda_add_library(solver_lib ${SOLVER_SRC})
+target_link_libraries(solver_lib math_lib)
+target_link_libraries(solver_lib common_lib)
+target_link_libraries(solver_lib ${Boost_FILESYSTEM_LIBRARY})
+target_link_libraries(solver_lib ${CUDA_CUBLAS_LIBRARIES})

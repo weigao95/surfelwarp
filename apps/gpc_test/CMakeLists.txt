@@ -1,0 +1,5 @@
+cuda_add_executable(gpc_test main.cpp)
+target_link_libraries(gpc_test common_lib)
+target_link_libraries(gpc_test math_lib)
+target_link_libraries(gpc_test imgproc_lib)
+target_link_libraries(gpc_test visualization_lib)

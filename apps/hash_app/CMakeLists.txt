@@ -1,0 +1,6 @@
+file(GLOB HASH_CHECKER_SRC *.h *.hpp *.cpp *.cu)
+source_group("src" FILES ${HASH_CHECKER_SRC})
+cuda_add_executable(hash_checker ${HASH_CHECKER_SRC})
+target_link_libraries(hash_checker common_lib)
+target_link_libraries(hash_checker math_lib)
+target_link_libraries(hash_checker hash_lib)

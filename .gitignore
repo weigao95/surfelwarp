@@ -1,0 +1,60 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Cuda files
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin
+
+# The data path
+data/*
+
+# The build files
+build/*
+
+# The file for Visual studio, vs code, clion
+.vscode/*
+cmake-build*
+.idea/*
+*.TMP
+*.tmp
+
+# The glad loading library
+# *glad*
+# *khr*
+
+# the result directory
+*results/*

@@ -1,0 +1,16 @@
+{
+    "clip_far":1300,
+    "clip_near":10,
+    "data_prefix":"C:/Users/wei/Documents/Visual Studio 2015/Projects/surfelwarp/test_data/boxing",
+    "depth_focal_x":570.0,"depth_focal_y":570.0,"depth_principal_x":320.0,"depth_principal_y":240.0,
+    "gpc_model_path":"C:/Users/wei/Documents/Visual Studio 2015/Projects/surfelwarp/test_data/sintel_small_speed",
+    "image_cols":640,"image_rows":480,
+    "start_frame":0,
+    "num_frame":310,
+    "rgb_focal_x":570.0,"rgb_focal_y":570.0,"rgb_principal_x":320.0,"rgb_principal_y":240.0,
+    "use_periodic_reinit":false,
+    "reinit_period":30,
+    "use_density":true,
+    "use_foreground":false,
+    "use_offline_foreground":false
+}
