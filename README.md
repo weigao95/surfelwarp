@@ -12,7 +12,9 @@ Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynam
 
 ### Build Instruction
 
-The code is developed on Ubuntu 16.04 with `CUDA-9` and `CUDA-10`. The tested compilers are `gcc-5.4`, `gcc-6.0` and `gcc-6.5`. Note that `gcc-5.5` is not supported by CUDA and may cause errors. For the installation of CUDA, please follow the [official guide](<https://developer.nvidia.com/cuda-downloads>).
+The code is developed on Visual Studio 2015 with `CUDA-9` . It also works on Ubuntu 16.04, but for unknown reason it runs much slower (I haven't investigate it carefully). In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows.
+
+The tested compilers are `gcc-5.4`, `gcc-6.0` and `gcc-6.5`. Note that `gcc-5.5` is not supported by CUDA and may cause errors. For the installation of CUDA, please follow the [official guide](<https://developer.nvidia.com/cuda-downloads>).
 
 This repo depends on `pcl` and `opencv`. The default versions of both Ubuntu 16.04 and `ros-kinetic` have been tested. For Ubuntu 16.04, you can run the following command to install them
 
@@ -58,7 +60,7 @@ The code is re-factored and improved from the repo of our RSS paper. There are s
 
 - [x] Add sparse feature correspondence
 - [x] Implement albedo reconstruction
-- [ ] Rewrite automatic reinitialization detection for the new geometry and loss. Currently, only periodic reinitialization is implemented
+- [ ] Rewrite automatic reinitialization detection for the new geometry and loss function. Currently, only periodic reinitialization is implemented
 - [ ] Port the GPU kdtree querying (although the overall speed is already relatively fast)
 
 ### Contact
