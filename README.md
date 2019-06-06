@@ -46,15 +46,16 @@ The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would b
   
 - How to use my own data?
 
-  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format or [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
+  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format o [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
 
 ### TODO
 
-The code is re-factored from a pretty messy version which is the backbone of all the experiments in our paper. Not all the code has been adapted into this repository and the author is working on it. Here is a list of TODOs:
+The code is re-factored and improved from the repo of our RSS paper. There are some new features and some old code  need to be ported into this repository. Here is a list of TODOs:
 
-- [ ] The GPU implementation of various algorithms.
-- [ ] Revive the articulated kinematic model using the new MultiBodyTree in drake.
-- [ ] The deformable kinematic model is currently in another repo (SurfelWarp).
+- [x] Add sparse feature correspondence
+- [x] Implement albedo reconstruction
+- [ ] Rewrite automatic reinitialization detection for the new geometry and loss. Currently, only periodic reinitialization is implemented
+- [ ] Port the GPU kdtree querying (although the overall speed is already relatively fast)
 
 ### Contact
 
