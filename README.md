@@ -14,31 +14,25 @@ Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynam
 
 The code is developed on Visual Studio 2015 with `CUDA-9` . It also works on Ubuntu 16.04, but for unknown reason it runs much slower (I haven't investigate it carefully). In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows.
 
-The tested compilers are `gcc-5.4`, `gcc-6.0` and `gcc-6.5`. Note that `gcc-5.5` is not supported by CUDA and may cause errors. For the installation of CUDA, please follow the [official guide](<https://developer.nvidia.com/cuda-downloads>).
-
-This repo depends on `pcl` and `opencv`. The default versions of both Ubuntu 16.04 and `ros-kinetic` have been tested. For Ubuntu 16.04, you can run the following command to install them
+For Ubuntu 16.04, you can run the following command to install the dependency
 
 ```shell
-sudo apt-get install libpcl-dev libopencv-dev
-```
-
-This repo also depends on `glog` which can be installed by
-
-```shell
-sudo apt-get install libgoogle-glog-dev
+sudo apt-get install libpcl-dev libopencv-dev libglfw3 libglfw3-dev
 ```
 
 Now you are ready to build
 
 ```shell
-git clone https://gaowei19951004@bitbucket.org/gaowei19951004/poser-public.git
-cd ${project_root}
+git clone https://github.com/weigao95/surfelwarp
+cd surfelwarp
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake ..
 make
 ```
 
-The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would be a good starting point. The test data is also included in that subdirectory. Other executables in `apps` subfolder have a very similiar code structure.
+For build on windows please refer to . 
+
+### Run Instruction
 
 ### FAQ
 
