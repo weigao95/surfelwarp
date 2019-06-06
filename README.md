@@ -1,8 +1,6 @@
-# [SurfelWarp: Efficient Non-Volumetic Dyanmic Reconstruction](<https://sites.google.com/view/surfelwarp/home>)
+# [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
 
-A reference implementation for the paper: 
-
-In addition to FilterReg, this repo contains the implementation of various geometric processing algorithms. This repo aims at real-time tracking and geometric processing for robotic manipulation, visual odometry and SLAM (3D Reconstrution).
+SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). However, surfelwarp uses [surfel](https://en.wikipedia.org/wiki/Surfel) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
 
 ### Demo [[Video]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
