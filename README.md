@@ -42,11 +42,15 @@ The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would b
 
 - What's the typical speed of surfelwarp?
 
-  On windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in [surfelwarp_app](https://github.com/weigao95/surfelwarp/blob/master/apps/surfelwarp_app/main.cpp), you need to build with Release and [disable offline rendering](https://github.com/weigao95/surfelwarp/blob/05f5bb9209a6d8f38febad63a92639054877bb54/apps/surfelwarp_app/main.cpp#L33) (which takes most of the time).
-  
+  On the windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in [surfelwarp_app](https://github.com/weigao95/surfelwarp/blob/master/apps/surfelwarp_app/main.cpp), you need to build with Release and [disable offline rendering](https://github.com/weigao95/surfelwarp/blob/05f5bb9209a6d8f38febad63a92639054877bb54/apps/surfelwarp_app/main.cpp#L33) (which takes most of the time).
+
 - How to use my own data?
 
-  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format o [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
+  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format of [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
+
+- How to deal with topology change?
+
+  Currently, only periodic reinitialization is implemented. To use it, set the [flag](https://github.com/weigao95/surfelwarp/blob/bfb2ccaac5b986fb42888f41624a275c1594e084/test_data/boxing_config.json#L11) in config file. More advanced criterion of reinitialization would come soon.
 
 ### TODO
 
