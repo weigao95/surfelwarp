@@ -34,7 +34,17 @@ For build on windows please refer to [this document](https://github.com/weigao95
 
 ### Run Instruction
 
-We use the of [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence.
+We use the of [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the dataset and extract it to `data_root`, your file structure should look like
+
+```
+${data_root}/frame-000000.color.png
+${data_root}/frame-000000.depth.png
+...
+```
+
+You also need to download the trained model for Global Patch Collider (gpc) from [here](https://drive.google.com/file/d/10A80gH5p4_eDbYPs10wHLI-ZKBwkG1fC/view?usp=sharing). Let the path to the model be `${gpc_path}` .
+
+
 
 ### FAQ
 
