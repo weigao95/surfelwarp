@@ -44,7 +44,14 @@ ${data_root}/frame-000000.depth.png
 
 You also need to download the trained model for Global Patch Collider (gpc) from [here](https://drive.google.com/file/d/10A80gH5p4_eDbYPs10wHLI-ZKBwkG1fC/view?usp=sharing). Let the path to the model be `${gpc_path}` .
 
+In the [configuration file](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json), please modify the `data_prefix` and `gpc_model_path` to `${data_root}` and `${gpc_path}`, respectively. After that, you can run the algorithm with
 
+```
+cd ${project_root}/build/apps/
+./surfelwarp_app /path/to/config
+```
+
+If everything goes well, the executable would produce the reconstructed result per frame in the same folder as `surfelwarp_app`. 
 
 ### FAQ
 
