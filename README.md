@@ -47,7 +47,7 @@ You also need to download the trained model for Global Patch Collider (gpc) from
 In the [configuration file](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json), please modify the `data_prefix` and `gpc_model_path` to `${data_root}` and `${gpc_path}`, respectively. After that, you can run the algorithm with
 
 ```
-cd ${project_root}/build/apps/
+cd ${project_root}/build/apps/surfelwarp_app
 ./surfelwarp_app /path/to/config
 ```
 
