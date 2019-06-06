@@ -2,13 +2,15 @@
 
 A reference implementation for the paper: 
 
-Wei Gao and Russ Tedrake, "FilterReg: Robust and Efficient Probabilistic Point-Set Registration using Gaussian Filter and Twist Parameterization", CVPR 2019 (**Oral**)  [[Project]](<https://sites.google.com/view/filterreg/home>) [[Paper]](https://arxiv.org/abs/1811.10136) [[Supplemental]](https://drive.google.com/file/d/1R_E-v3vh7aq3uwg_EOmZEtItMn649rVI/view?usp=sharing)
-
 In addition to FilterReg, this repo contains the implementation of various geometric processing algorithms. This repo aims at real-time tracking and geometric processing for robotic manipulation, visual odometry and SLAM (3D Reconstrution).
 
 ### Video Demo [[Link]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
 [![Surfelwarp](./doc/surfelwarp.png)](https://www.youtube.com/watch?v=fexYm61VGMA)
+
+### Publication
+
+Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>) [[Paper]](https://arxiv.org/abs/1904.13073)
 
 ### Build Instruction
 
