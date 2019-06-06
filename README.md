@@ -57,7 +57,7 @@ If everything goes well, the executable would produce the reconstructed result p
 
 - What's the typical speed of surfelwarp?
 
-  On the windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in [surfelwarp_app](https://github.com/weigao95/surfelwarp/blob/master/apps/surfelwarp_app/main.cpp), you need to build with Release and [disable offline rendering](https://github.com/weigao95/surfelwarp/blob/05f5bb9209a6d8f38febad63a92639054877bb54/apps/surfelwarp_app/main.cpp#L33) (which takes most of the time).
+  On the windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms] per frame. To test the speed in [surfelwarp_app](https://github.com/weigao95/surfelwarp/blob/master/apps/surfelwarp_app/main.cpp), you need to build with Release and [disable offline rendering](https://github.com/weigao95/surfelwarp/blob/05f5bb9209a6d8f38febad63a92639054877bb54/apps/surfelwarp_app/main.cpp#L33) (which takes most of the time).
 
 - How to use my own data?
 
