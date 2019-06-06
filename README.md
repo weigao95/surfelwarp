@@ -69,7 +69,7 @@ If everything goes well, the executable would produce the reconstructed result p
 
 ### TODO
 
-The code is re-factored and improved from the repo of our RSS paper. There are some new features and some old code  need to be ported into this repository. Here is a list of TODOs:
+The code is re-factored and improved from the repo of our RSS paper. There are some planned new features and some old code  need to be ported into this repository. Here is a list of TODOs:
 
 - [x] Add sparse feature correspondence
 - [x] Implement albedo reconstruction
