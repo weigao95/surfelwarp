@@ -1,4 +1,4 @@
-# [Surfelwarp](<https://sites.google.com/view/surfelwarp/home>)
+# [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
 
 A reference implementation for the paper: 
 
@@ -8,7 +8,7 @@ In addition to FilterReg, this repo contains the implementation of various geome
 
 ### Video Demo [[Link]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
-[![Surfelwarp](./doc/surfelwarp.png)](https://drive.google.com/open?id=1vHjr-WgIRPV1n7cnuWaLbhf8tv4GeL9q)
+[![Surfelwarp](./doc/surfelwarp.png)](https://www.youtube.com/watch?v=fexYm61VGMA)
 
 ### Build Instruction
 
