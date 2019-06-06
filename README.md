@@ -1,4 +1,4 @@
-# [FilterReg](<https://sites.google.com/view/filterreg/home>)
+# [Surfelwarp](<https://sites.google.com/view/surfelwarp/home>)
 
 A reference implementation for the paper: 
 
@@ -6,9 +6,9 @@ Wei Gao and Russ Tedrake, "FilterReg: Robust and Efficient Probabilistic Point-S
 
 In addition to FilterReg, this repo contains the implementation of various geometric processing algorithms. This repo aims at real-time tracking and geometric processing for robotic manipulation, visual odometry and SLAM (3D Reconstrution).
 
-### Video Demo [[Link]](https://youtu.be/k-YQVZfM0qg)
+### Video Demo [[Link]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
-[![FilterReg](./doc/articulated.png)](https://youtu.be/k-YQVZfM0qg)
+[![Surfelwarp](./doc/surfelwarp.png)](https://drive.google.com/open?id=1vHjr-WgIRPV1n7cnuWaLbhf8tv4GeL9q)
 
 ### Build Instruction
 
