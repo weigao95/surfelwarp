@@ -1,6 +1,6 @@
 # [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
 
-SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). However, surfelwarp uses [surfel](https://en.wikipedia.org/wiki/Surfel) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
+SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). However, surfelwarp uses flat [surfel](https://en.wikipedia.org/wiki/Surfel) array (instead of volumetric field) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
 
 ### Demo [[Video]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
@@ -8,7 +8,7 @@ SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https:/
 
 ### Publication
 
-Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>) [[Paper]](https://arxiv.org/abs/1904.13073)
+Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>) [[Paper]](https://arxiv.org/abs/1904.13073)
 
 ### Build Instruction
 
