@@ -12,9 +12,9 @@ Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynam
 
 ### Build Instruction
 
-The code is developed on Visual Studio 2015 with `CUDA 9` . Note that `CUDA 10` and higher are not compatible with `pcl 1.8` and don't work. The code also works with Ubuntu 16.04, but for unknown reason it runs much slower (I haven't investigate it carefully). In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows.
+The code is developed on Visual Studio 2015 with `CUDA 9` . Note that `CUDA 10` and higher are not compatible with `pcl 1.8` and don't work. The code also works with Ubuntu 16.04, but for unknown reason it runs much slower (I haven't investigate it carefully). 
 
-For Ubuntu 16.04, you can run the following command to install the dependency
+In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows. For Ubuntu 16.04, you can run the following command to install the dependency
 
 ```shell
 sudo apt-get install libpcl-dev libopencv-dev libglfw3 libglfw3-dev
