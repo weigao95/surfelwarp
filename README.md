@@ -34,7 +34,7 @@ For build on windows please refer to [this document](https://github.com/weigao95
 
 ### Run Instruction
 
-We use the of [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the dataset and extract it to `data_root`, your file structure should look like
+We use the [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the dataset and extract it to `data_root`, your file structure should look like
 
 ```
 ${data_root}/frame-000000.color.png
