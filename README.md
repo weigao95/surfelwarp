@@ -8,7 +8,7 @@ SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https:/
 
 ### Publication
 
-Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>) [[Paper]](https://arxiv.org/abs/1904.13073)
+Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>) [[Paper]](https://arxiv.org/abs/1904.13073)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
 ### Build Instruction
 
@@ -36,7 +36,13 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
 
-The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would be a good starting point. The test data is also included in that subdirectory. Other execultables in `apps` subfolder have a very similiar code structure.
+The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would be a good starting point. The test data is also included in that subdirectory. Other executables in `apps` subfolder have a very similiar code structure.
+
+### FAQ
+
+- What's the typical speed of surfelwarp?
+
+  On windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in surfelwarp_app, you need to build with Release and disable offline rendering (which takes most of the time).
 
 ### TODO
 
@@ -45,12 +51,6 @@ The code is re-factored from a pretty messy version which is the backbone of all
 - [ ] The GPU implementation of various algorithms.
 - [ ] Revive the articulated kinematic model using the new MultiBodyTree in drake.
 - [ ] The deformable kinematic model is currently in another repo (SurfelWarp).
-
-### FAQ
-
-- How to switch the compiler to `gcc-6` in `cmake`?
-
-  Run `source use_gcc6` before any `cmake` command. You might need to remove the `CMakeCache.txt` in your build directory.
 
 ### Contact
 

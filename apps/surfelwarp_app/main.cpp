@@ -28,13 +28,16 @@ int main(int argc, char** argv) {
 
 	//The context
 	//auto context = initCudaContext();
-	
+
+	//Save offline
+	bool offline_rendering = true;
+
 	//The processing loop
 	SurfelWarpSerial::Ptr fusion = std::make_shared<SurfelWarpSerial>();
 	fusion->ProcessFirstFrame();
 	for(auto i = 0; i < config.num_frames(); i++){
 		LOG(INFO) << "The " << i << "th Frame";
-		fusion->ProcessNextFrameWithReinit();
+		fusion->ProcessNextFrameWithReinit(offline_rendering);
 	}
 	
 	//destroyCudaContext(context);
