@@ -65,7 +65,7 @@ If everything goes well, the executable would produce the reconstructed result p
 
 - How to deal with topology change?
 
-  Currently, only periodic reinitialization is implemented. To use it, set the [flag](https://github.com/weigao95/surfelwarp/blob/bfb2ccaac5b986fb42888f41624a275c1594e084/test_data/boxing_config.json#L11) in config file. More advanced criterion of reinitialization would come soon.
+  Currently, only periodic reinitialization is implemented. To use it, set [this flag](https://github.com/weigao95/surfelwarp/blob/bfb2ccaac5b986fb42888f41624a275c1594e084/test_data/boxing_config.json#L11) in config file. More advanced criterion of reinitialization would come soon.
 
 ### TODO
 
