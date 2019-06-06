@@ -30,7 +30,7 @@ cmake ..
 make
 ```
 
-For build on windows please refer to . 
+For build on windows please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for windows platform.
 
 ### Run Instruction
 
