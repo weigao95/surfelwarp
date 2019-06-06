@@ -42,7 +42,11 @@ The [`apps/rigid_pt2pt`](<https://sites.google.com/view/filterreg/home>) would b
 
 - What's the typical speed of surfelwarp?
 
-  On windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in surfelwarp_app, you need to build with Release and disable offline rendering (which takes most of the time).
+  On windows platform with a Nvidia Titan Xp GPU, the processing time is usually less than 20 [ms]. To test the speed in [surfelwarp_app](https://github.com/weigao95/surfelwarp/blob/master/apps/surfelwarp_app/main.cpp), you need to build with Release and [disable offline rendering](https://github.com/weigao95/surfelwarp/blob/05f5bb9209a6d8f38febad63a92639054877bb54/apps/surfelwarp_app/main.cpp#L33) (which takes most of the time).
+  
+- How to use my own data?
+
+  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format or [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
 
 ### TODO
 
