@@ -1,10 +1,10 @@
-# [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
+# [SurfelWarp: Efficient Non-Volumetic Dyanmic Reconstruction](<https://sites.google.com/view/surfelwarp/home>)
 
 A reference implementation for the paper: 
 
 In addition to FilterReg, this repo contains the implementation of various geometric processing algorithms. This repo aims at real-time tracking and geometric processing for robotic manipulation, visual odometry and SLAM (3D Reconstrution).
 
-### Video Demo [[Link]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
+### Demo [[Video]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
 [![Surfelwarp](./doc/surfelwarp.png)](https://www.youtube.com/watch?v=fexYm61VGMA)
 
