@@ -1,6 +1,6 @@
 # [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
 
-SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). Compared with DynamicFusion and other dynamic reconstruction methods, surfelwarp uses flat [surfel](https://en.wikipedia.org/wiki/Surfel) array (instead of volumetric field) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
+SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). Compared to other dynamic reconstruction methods, surfelwarp uses flat [surfel](https://en.wikipedia.org/wiki/Surfel) array (instead of volumetric field) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
 
 ### Demo [[Video]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
@@ -12,7 +12,7 @@ Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynam
 
 ### Build Instruction
 
-The code is developed on Visual Studio 2015 with `CUDA 9` . Note that `CUDA 10` and higher are not compatible with `pcl 1.8` and don't work. The code also works with Ubuntu 16.04, but for unknown reason it runs much slower (I haven't investigate it carefully). 
+The code is developed on Visual Studio 2015 with `CUDA 9` . Note that `CUDA 10` and higher versions are not compatible with `pcl 1.8` and don't work. The code also works with Ubuntu 16.04, but for unknown reason it runs much slower on linux (I haven't investigate it carefully). 
 
 In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows. For Ubuntu 16.04, you can run the following command to install the dependency
 
@@ -34,7 +34,7 @@ For build on windows please refer to [this document](https://github.com/weigao95
 
 ### Run Instruction
 
-We use the [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the dataset and extract it to `data_root`, your file structure should look like
+We use the [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the VolumeDeform dataset and extract it to `data_root`, your file structure should look like
 
 ```
 ${data_root}/frame-000000.color.png
