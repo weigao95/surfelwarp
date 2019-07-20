@@ -1,6 +1,6 @@
 # [SurfelWarp](<https://sites.google.com/view/surfelwarp/home>)
 
-SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). Compared to other dynamic reconstruction methods, surfelwarp uses flat [surfel](https://en.wikipedia.org/wiki/Surfel) array (instead of volumetric field) as the geometry representation, which makes the pipeline more robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
+SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https://www.youtube.com/watch?v=i1eZekcc_lM). Compared to other dynamic reconstruction methods, surfelwarp uses flat [surfel](https://en.wikipedia.org/wiki/Surfel) array (instead of volumetric field) as the geometry representation, which makes the pipeline robust and efficient. The approach is described in [our paper](https://arxiv.org/abs/1904.13073).
 
 ### Demo [[Video]](https://drive.google.com/open?id=1Qs-yM8RbkG4eJoMIs5y_WA_J1KMBLYCW)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
@@ -30,7 +30,7 @@ cmake ..
 make
 ```
 
-For build on windows please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform.
+For build on windows please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform (The `arch` flag for this executable is `sm_60`).
 
 ### Run Instruction
 
