@@ -5,8 +5,6 @@
 #include "common/Constants.h"
 #include "core/warp_solver/JtJMaterializer.h"
 
-#include <pcl/common/time.h>
-
 surfelwarp::JtJMaterializer::JtJMaterializer() {
 	memset(&m_node2term_map, 0, sizeof(m_node2term_map));
 	memset(&m_nodepair2term_map, 0, sizeof(m_nodepair2term_map));
@@ -48,7 +46,10 @@ void surfelwarp::JtJMaterializer::SetInputs(
 void surfelwarp::JtJMaterializer::BuildMaterializedJtJNondiagonalBlocks(cudaStream_t stream) {
 	computeNonDiagonalBlocks(stream);
 	//computeNonDiagonalBlocksNoSync(stream);
-	
+
+	//TODO: instead of leaving dead code, either change this function w/ optional argument/flag check or
+	// use a separate set of functions / child class w/ overriding member functions for performance measurement
+    //TODO: get rid of PCL usage in favor of std::chrono or the like
 	//Performance test
 	/*{
 		pcl::ScopeTime time("Performance test of Compute JtJ");

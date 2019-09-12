@@ -7,7 +7,6 @@
 #include "core/warp_solver/solver_constants.h"
 #include "core/warp_solver/geometry_icp_jacobian.cuh"
 #include "core/warp_solver/PreconditionerRhsBuilder.h"
-#include <pcl/common/time.h>
 
 /* The interface function for JtResidual
  */

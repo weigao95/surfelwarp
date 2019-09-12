@@ -7,7 +7,6 @@
 #include "common/sanity_check.h"
 #include "core/geometry/SurfelFusionHandler.h"
 
-#include <pcl/common/time.h>
 #include <map>
 
 surfelwarp::SurfelFusionHandler::SurfelFusionHandler() {

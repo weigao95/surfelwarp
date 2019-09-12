@@ -10,11 +10,7 @@
 #include "common/ArrayView.h"
 #include <opencv2/opencv.hpp>
 #include <memory>
-#ifdef WITH_PCL
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#endif
-
+#include "common/point_cloud_typedefs.h"
 
 namespace surfelwarp {
 
@@ -128,7 +124,7 @@ namespace surfelwarp {
 
 		/* The point cloud drawing methods
 		*/
-		static void DrawPointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr & point_cloud);
+		static void DrawPointCloud(const PointCloud3f_Pointer& point_cloud);
 	    static void DrawPointCloud(const DeviceArray<float4>& point_cloud);
 	    static void DrawPointCloud(const DeviceArrayView<float4>& point_cloud);
 		static void DrawPointCloud(const DeviceArray2D<float4>& vertex_map);
@@ -142,8 +138,10 @@ namespace surfelwarp {
 		/* The point cloud with normal
 		 */
 		static void DrawPointCloudWithNormal(
-			const pcl::PointCloud<pcl::PointXYZ>::Ptr& point_cloud, 
-			const pcl::PointCloud<pcl::Normal>::Ptr& normal_cloud
+			const PointCloud3f_Pointer& point_cloud
+#ifdef WITH_PCL
+			,const PointCloudNormal_Pointer& normal_cloud
+#endif
 		);
 	    static void DrawPointCloudWithNormal(
 		    const DeviceArray<float4>& vertex_cloud,
@@ -164,8 +162,8 @@ namespace surfelwarp {
 	    
 	    /* The colored point cloud
 	     */
-	    static void DrawColoredPointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& point_cloud);
-	    static void SaveColoredPointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& point_cloud, const std::string& path);
+	    static void DrawColoredPointCloud(const PointCloud3fRGB_Pointer& point_cloud);
+	    static void SaveColoredPointCloud(const PointCloud3fRGB_Pointer& point_cloud, const std::string& path);
 	    static void DrawColoredPointCloud(const DeviceArray<float4>& vertex, const DeviceArray<float4>& color_time);
 	    static void DrawColoredPointCloud(const DeviceArrayView<float4>& vertex, const DeviceArrayView<float4>& color_time);
 	    static void DrawColoredPointCloud(cudaTextureObject_t vertex_map, cudaTextureObject_t color_time_map);
@@ -173,10 +171,10 @@ namespace surfelwarp {
 	    
 	    /* The matched point cloud
 	     */
-	    static void DrawMatchedCloudPair(const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_1,
-	                                     const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_2);
-	    static void DrawMatchedCloudPair(const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_1,
-	                                     const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_2,
+	    static void DrawMatchedCloudPair(const PointCloud3f_Pointer& cloud_1,
+	                                     const PointCloud3f_Pointer& cloud_2);
+	    static void DrawMatchedCloudPair(const PointCloud3f_Pointer& cloud_1,
+	                                     const PointCloud3f_Pointer& cloud_2,
 	                                     const Eigen::Matrix4f & from1To2);
 	    static void DrawMatchedCloudPair(
 			cudaTextureObject_t cloud_1,
@@ -192,13 +190,13 @@ namespace surfelwarp {
 	
 	
 	    static void SaveMatchedCloudPair(
-		    const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_1,
-		    const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_2,
+		    const PointCloud3f_Pointer& cloud_1,
+		    const PointCloud3f_Pointer& cloud_2,
 		    const std::string& cloud_1_name, const std::string& cloud_2_name
 	    );
 	    static void SaveMatchedCloudPair(
-		    const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_1,
-		    const pcl::PointCloud<pcl::PointXYZ>::Ptr & cloud_2,
+		    const PointCloud3f_Pointer & cloud_1,
+		    const PointCloud3f_Pointer & cloud_2,
 		    const Eigen::Matrix4f & from1To2,
 		    const std::string& cloud_1_name, const std::string& cloud_2_name
 	    );
@@ -218,11 +216,11 @@ namespace surfelwarp {
 	
 	    /* The method to draw matched color-point cloud
 	     */
-	    static void DrawMatchedCloudPair(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud_1,
-	                                     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud_2);
-	    static void DrawMatchedCloudPair(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud_1,
-	                                     const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud_2,
-	                                     const Eigen::Matrix4f& from1To2);
+	    static void DrawMatchedRGBCloudPair(const PointCloud3fRGB_Pointer& cloud_1,
+	                                        const PointCloud3fRGB_Pointer& cloud_2);
+	    static void DrawMatchedRGBCloudPair(const PointCloud3fRGB_Pointer& cloud_1,
+	                                        const PointCloud3fRGB_Pointer& cloud_2,
+	                                        const Eigen::Matrix4f& from1To2);
 	    static void DrawMatchedCloudPair(
 		    cudaTextureObject_t vertex_map, cudaTextureObject_t color_time_map,
 		    const DeviceArrayView<float4>& surfel_array, const DeviceArrayView<float4>& color_time_array,
@@ -262,5 +260,8 @@ namespace surfelwarp {
 		    DeviceArrayView<ushort2> append_pixel,
 		    const Matrix4f& world2camera
 	    );
+    private:
+        template<typename TPointInput, typename TNormalsInput>
+        static void DrawPointCloudWithNormals_Generic(TPointInput& points, TNormalsInput& normals);
     };
 }

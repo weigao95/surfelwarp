@@ -2,8 +2,6 @@
 #include "pcg_solver/ApplySpMVBinBlockCSR.h"
 #include "core/warp_solver/JtJMaterializer.h"
 
-#include <pcl/common/time.h>
-
 //An integrated test on the correctness of spmv
 void surfelwarp::JtJMaterializer::TestSparseMV(
 	DeviceArrayView<float> x,
@@ -28,14 +26,16 @@ void surfelwarp::JtJMaterializer::TestSparseMV(
 	cudaSafeCall(cudaDeviceSynchronize());
 	cudaSafeCall(cudaGetLastError());
 #endif
-
-	/*{
-		pcl::ScopeTime time("The performance of materialized spmv");
-		for(auto i = 0; i < 10000; i++) {
-			spmv_handler.ApplySpMV(x, DeviceArraySlice<float>(jtj_x));
-		}
-		cudaSafeCall(cudaDeviceSynchronize());
-	}*/
+    //TODO: instead of leaving dead code, either change this function w/ optional argument/flag check or
+    // use a separate set of functions / child class w/ overriding member functions for performance measurement
+    //TODO: get rid of PCL usage in favor of std::chrono or the like
+    /*{
+        pcl::ScopeTime time("The performance of materialized spmv");
+        for(auto i = 0; i < 10000; i++) {
+            spmv_handler.ApplySpMV(x, DeviceArraySlice<float>(jtj_x));
+        }
+        cudaSafeCall(cudaDeviceSynchronize());
+    }*/
 	
 	//Compare with ground truth
 	std::vector<float> spmv_materialized, spmv_result;

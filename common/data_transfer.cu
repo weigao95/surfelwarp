@@ -3,78 +3,12 @@
 #include "common/encode_utils.h"
 #include "common/logging.h"
 #include "common/common_texture_utils.h"
+#include "common/common_point_cloud_utils.h"
 #include "math/vector_ops.hpp"
 #include <assert.h>
 #include <Eigen/Eigen>
 #include <device_launch_parameters.h>
 
-
-inline
-void setPoint(float x, float y, float z, PointCloud3f_Pointer& point_cloud, int index, float scale = 1000.0f) {
-#ifdef WITH_PCL
-	pcl::PointXYZ point;
-	point.x = x * scale;
-	point.y = y * scale;
-	point.z = z * scale;
-	point_cloud->points.push_back(point);
-#elif defined(WITH_CILANTRO)
-	point_cloud->points.col(index) = Eigen::Vector3f(x * scale, y * scale, z * scale);
-#endif
-}
-
-inline
-void setPointRGB(float x, float y, float z, uchar r, uchar g, uchar b, PointCloud3f_Pointer& point_cloud, int index,
-                 float scale = 1000.0f) {
-#ifdef WITH_PCL
-	pcl::PointXYZRGB point;
-	point.x = x * scale;
-	point.y = y * scale;
-	point.z = z * scale;
-	point.r = r;
-	point.g = g;
-	point.b = b;
-	point_cloud->points.push_back(point);
-#elif defined(WITH_CILANTRO)
-	point_cloud->points.col(index) = Eigen::Vector3f(x * scale, y * scale, z * scale);
-	point_cloud->colors.col(index) = Eigen::Vector3f(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.f,
-	                                                 static_cast<float>(b) / 255.f);
-#endif
-}
-
-inline
-void setNormal(float x, float y, float z, PointCloudNormal_Pointer& normal_cloud, int index) {
-#ifdef WITH_PCL
-	pcl::Normal normal;
-	normal.normal_x = x;
-	normal.normal_y = y;
-	normal.normal_z = z;
-	normal_cloud->points.push_back(normal);
-#elif defined(WITH_CILANTRO)
-	normal_cloud->normals.col(index) = Eigen::Vector3f(x, y, z);
-#endif
-}
-
-inline
-void setPointCloudSize(PointCloud3f_Pointer& point_cloud, int size) {
-#ifdef WITH_CILANTRO
-	point_cloud->points.resize(PointCloud3f::Dimension, size);
-#endif
-}
-
-inline
-void setPointCloudRGBSize(PointCloud3f_Pointer& point_cloud, int size) {
-#ifdef WITH_CILANTRO
-	point_cloud->points.resize(PointCloud3f::Dimension, size);
-	point_cloud->colors.resize(3, size);
-#endif
-}
-
-inline
-void setNormalCloudSize(PointCloudNormal_Pointer& point_cloud, int size) {
-#ifdef WITH_CILANTRO
-	point_cloud->normals.resize(PointCloudNormal::Dimension, size);
-#endif
-}
 
 cv::Mat surfelwarp::downloadDepthImage(const DeviceArray2D<unsigned short>& image_gpu) {
 	const auto num_rows = image_gpu.rows();
@@ -399,7 +333,7 @@ PointCloudNormal_Pointer surfelwarp::downloadNormalCloud(const DeviceArray<float
 	d_normal.download(h_normal);
 	PointCloudNormal_Pointer normal_cloud(new PointCloudNormal);
 	for (auto idx = 0; idx < d_normal.size(); idx++) {
-		setNormal(h_normal[idx].x, h_normal[idx].y, h_normal[idx].z, point_cloud, idx);
+		setNormal(h_normal[idx].x, h_normal[idx].y, h_normal[idx].z, normal_cloud, idx);
 	}
 	return normal_cloud;
 }
@@ -433,7 +367,7 @@ PointCloudNormal_Pointer surfelwarp::downloadNormalCloud(const DeviceArray2D<flo
 		if (norm(make_float3(host_ptr[idx].x, host_ptr[idx].y, host_ptr[idx].z)) > 1e-4) {
 			valid_count++;
 		}
-		setNormal(normal_dev.x, normal_dev.y, normal_dev.z, point_cloud, idx);
+		setNormal(normal_dev.x, normal_dev.y, normal_dev.z, normal_cloud, idx);
 	}
 	//LOG(INFO) << "The number of valid normals is " << valid_count;
 	delete[] host_ptr;
@@ -565,8 +499,8 @@ void surfelwarp::separateDownloadPointCloud(
 ) {
 	//Clear the existing point cloud
 #ifdef WITH_PCL
-	remaining_cloud.points.clear();
-	appended_cloud.points.clear();
+	remaining_cloud->points.clear();
+	appended_cloud->points.clear();
 #endif
 	setPointCloudSize(remaining_cloud, num_remaining_surfels);
 	setPointCloudSize(appended_cloud, point_cloud.Size() - num_remaining_surfels);

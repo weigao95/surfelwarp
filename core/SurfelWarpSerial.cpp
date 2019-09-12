@@ -12,7 +12,6 @@
 
 #include <thread>
 #include <fstream>
-#include <pcl/common/time.h>
 
 
 surfelwarp::SurfelWarpSerial::SurfelWarpSerial() {

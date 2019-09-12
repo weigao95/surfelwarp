@@ -49,8 +49,8 @@ include_directories(${CUB_DIR})
 # Point cloud library and a series / cilantro
 
 
-set(VISUALIZAITION_LIBRARY "PCL" CACHE STRING "Which library to use for visualization")
-set_property(CACHE VISUALIZAITION_LIBRARY PROPERTY STRINGS "PCL" "cilantro")
+set(VISUALIZATION_LIBRARY "PCL" CACHE STRING "Which library to use for visualization")
+set_property(CACHE VISUALIZATION_LIBRARY PROPERTY STRINGS "PCL" "cilantro")
 if(VISUALIZATION_LIBRARY STREQUAL "PCL")
     find_package(PCL REQUIRED)
     include_directories(${PCL_INCLUDE_DIRS})
@@ -64,7 +64,9 @@ endif()
 
 # Check the CUDA version and resolve confliction with pcl
 if(${CUDA_VERSION_MAJOR} LESS 11)
-    list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+    if(VISUALIZATION_LIBRARY STREQUAL "PCL")
+        list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+    endif()
     get_directory_property(dir_defs DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
     set(vtk_flags)
     foreach(it ${dir_defs})
