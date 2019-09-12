@@ -7,8 +7,11 @@
 #include "common/BinaryFileStream.h"
 #include "common/data_transfer.h"
 #include "visualization/Visualizer.h"
-#include <pcl/visualization/pcl_visualizer.h>
 #include <common/ArrayView.h>
+#ifdef WITH_PCL
+#include <pcl/visualization/pcl_visualizer.h>
+
+#endif
 
 /* The point cloud drawing methods
 */
@@ -114,7 +117,7 @@ void surfelwarp::Visualizer::DrawPointCloudWithNormal(
 	const DeviceArray<float4> &normal
 ) {
 	const auto point_cloud = downloadPointCloud(vertex);
-	const auto normal_cloud = downloadNormalCloud(normal);
+	const auto normal_cloud = PointCloud3f_PointerCloud(normal);
 	DrawPointCloudWithNormal(point_cloud, normal_cloud);
 }
 
@@ -133,7 +136,7 @@ void surfelwarp::Visualizer::DrawPointCloudWithNormal(
 	const DeviceArray2D<float4>& normal_map
 ) {
 	const auto point_cloud = downloadPointCloud(vertex_map);
-	const auto normal_cloud = downloadNormalCloud(normal_map);
+	const auto normal_cloud = PointCloud3f_PointerCloud(normal_map);
 	DrawPointCloudWithNormal(point_cloud, normal_cloud);
 }
 
@@ -142,7 +145,7 @@ void surfelwarp::Visualizer::DrawPointCloudWithNormal(
 	cudaTextureObject_t normal_map
 ) {
 	const auto point_cloud = downloadPointCloud(vertex_map);
-	const auto normal_cloud = downloadNormalCloud(normal_map);
+	const auto normal_cloud = PointCloud3f_PointerCloud(normal_map);
 	DrawPointCloudWithNormal(point_cloud, normal_cloud);
 }
 
@@ -158,7 +161,7 @@ void surfelwarp::Visualizer::DrawPointCloudWithNormal(
 void surfelwarp::Visualizer::SavePointCloudWithNormal(cudaTextureObject_t vertex_map, cudaTextureObject_t normal_map) {
 	//Download it
 	const auto point_cloud = downloadPointCloud(vertex_map);
-	const auto normal_cloud = downloadNormalCloud(normal_map);
+	const auto normal_cloud = PointCloud3f_PointerCloud(normal_map);
 	
 	//Construct the output stream
 	BinaryFileStream output_fstream("pointnormal", BinaryFileStream::Mode::WriteOnly);

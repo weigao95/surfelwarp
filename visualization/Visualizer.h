@@ -9,9 +9,12 @@
 #include "common/surfel_types.h"
 #include "common/ArrayView.h"
 #include <opencv2/opencv.hpp>
+#include <memory>
+#ifdef WITH_PCL
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <memory>
+#endif
+
 
 namespace surfelwarp {
 

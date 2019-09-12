@@ -6,7 +6,7 @@ project(surfelwarp)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # Cuda
-find_package(CUDA 9 EXACT REQUIRED)
+find_package(CUDA 9 REQUIRED)
 include_directories(${CUDA_INCLUDE_DIRS})
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_60")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
@@ -46,9 +46,21 @@ include_directories(${EIGEN_INCLUDE_DIR})
 set(CUB_DIR "${CMAKE_SOURCE_DIR}/external/cub-1.8.0")
 include_directories(${CUB_DIR})
 
-# Point cloud library and a series
-find_package(PCL REQUIRED)
-include_directories(${PCL_INCLUDE_DIRS})
+# Point cloud library and a series / cilantro
+
+
+set(VISUALIZAITION_LIBRARY "PCL" CACHE STRING "Which library to use for visualization")
+set_property(CACHE VISUALIZAITION_LIBRARY PROPERTY STRINGS "PCL" "cilantro")
+if(VISUALIZATION_LIBRARY STREQUAL "PCL")
+    find_package(PCL REQUIRED)
+    include_directories(${PCL_INCLUDE_DIRS})
+    add_definitions(-DWITH_PCL)
+elseif(VISUALIZATION_LIBRARY STREQUAL "cilantro")
+    find_package(cilantro REQUIRED)
+    include_directories(${cilantro_INCLUDE_DIRS})
+    add_definitions(-DWITH_CILANTRO)
+endif()
+
 
 # Check the CUDA version and resolve confliction with pcl
 if(${CUDA_VERSION_MAJOR} LESS 11)
