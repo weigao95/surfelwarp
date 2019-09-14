@@ -59,6 +59,15 @@ elseif(VISUALIZATION_LIBRARY STREQUAL "cilantro")
     find_package(cilantro REQUIRED)
     include_directories(${cilantro_INCLUDE_DIRS})
     add_definitions(-DWITH_CILANTRO)
+    # workaround for https://github.com/kzampog/cilantro/issues/37
+    find_package(Pangolin REQUIRED)
+    list(APPEND cilantro_LIBRARIES ${Pangolin_LIBRARIES})
+    # workaround for OpenMP flags not propagating from cilantro
+    find_package(OpenMP)
+    if(OPENMP_FOUND)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif()
 endif()
 
 
