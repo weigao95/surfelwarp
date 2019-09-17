@@ -13,28 +13,17 @@ set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
 
-# The library built on windows platform
-if(WIN32)
-    # Point cloud library and a series
-    set(PCL_DIR "C:/Developer/ShareLib/PCL_GPU/cmake")
 
-    # OpenCV lib
-    set(OpenCV_DIR "C:/Developer/ShareLib/opencv_gpu_world/")
-
-    # GLFW
-    include("C:/Developer/ShareLib/GLFW/lib/cmake/glfw3/glfw3Config.cmake")
-    include_directories("C:/Developer/ShareLib/GLFW/include")
-endif(WIN32)
+# GLFW package
+find_package(glfw3 REQUIRED)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # The library and compiler flags on Ubuntu
 if(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -g -G")
-
-    # GLFW package
-    find_package(GLFW REQUIRED)
-    include_directories(${GLFW_INCLUDE_DIR})
 endif(UNIX)
 
 # Do not use the system Eigen
