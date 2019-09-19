@@ -24,5 +24,6 @@ endif(UNIX)
 
 #On windows, the glfw lib is built separately
 if(WIN32)
+	target_compile_definitions(core_lib PUBLIC _ENABLE_EXTENDED_ALIGNED_STORAGE)
     target_link_libraries(core_lib glfw)
 endif(WIN32)

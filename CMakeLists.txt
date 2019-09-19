@@ -5,6 +5,10 @@ project(surfelwarp)
 # Add cmake module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+# Language options
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Cuda
 find_package(CUDA 9 REQUIRED)
 include_directories(${CUDA_INCLUDE_DIRS})
@@ -13,18 +17,52 @@ set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
 
-
 # GLFW package
 find_package(glfw3 REQUIRED)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+# The library and compiler flags on Windows
+if(MSVC)
+    option( MSVC_USE_STATIC_CRT  "Use static C Runtime with MSVC, /MT instead of /MD" ON)
+
+    # Make sure there are no erroneous C Runtime flags
+    list(APPEND FLAG_VARS
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO
+    )
+    if(MSVC_USE_STATIC_CRT)
+        foreach(FLAG_VAR ${FLAG_VARS})
+            string(REGEX REPLACE "/MD" "/MT" NEW_FLAGS "${${FLAG_VAR}}")
+            set(${FLAG_VAR} "${NEW_FLAGS}" CACHE STRING "" FORCE)
+        endforeach()
+    else()
+        foreach(FLAG_VAR ${FLAG_VARS})
+            string(REGEX REPLACE "/MT" "/MD" NEW_FLAGS "${${FLAG_VAR}}")
+            set(${FLAG_VAR} "${NEW_FLAGS}" CACHE STRING "" FORCE)
+        endforeach()
+    endif()
+
+	# Provisions for typical Boost compiled on Windows
+    # Most commonly, Boost libraries are compiled statically on windows (change as necesssary)
+    set(Boost_USE_STATIC_LIBS TRUE)
+	if(MSVC_USE_STATIC_CRT)
+		set(Boost_USE_STATIC_RUNTIME ON)
+	else()
+		set(Boost_USE_STATIC_RUNTIME OFF)
+	endif()
+	set(Boost_USE_MULTITHREADED ON)
+	set(Boost_USE_DEBUG_RUNTIME ON)
+	set(Boost_USE_DEBUG_PYTHON OFF)
+endif(MSVC)
 # The library and compiler flags on Ubuntu
 if(UNIX)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -g -G")
 endif(UNIX)
+
+# Append "d" to library versions with debugging symbols
+set(CMAKE_DEBUG_POSTFIX d)
 
 # Do not use the system Eigen
 set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")

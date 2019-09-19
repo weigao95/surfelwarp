@@ -128,7 +128,7 @@ PointCloud3fRGB_Pointer transformPointCloudRGB(const PointCloud3fRGB_Pointer& in
         transformed_cloud->points.push_back(transed_point);
 #elif defined(WITH_CILANTRO)
         transformed_cloud->points.col(iPoint) = transed_point4.head<3>();
-        transformed_cloud->colors.col(iPoint) = input->colors.col(iPoint);
+        transformed_cloud->colors.col(iPoint) = static_cast<Eigen::Vector3f>(input->colors.col(iPoint));
 #endif
     }
     return transformed_cloud;
