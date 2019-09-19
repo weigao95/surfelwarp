@@ -76,11 +76,8 @@ endif(UNIX)
 set(CMAKE_DEBUG_POSTFIX d)
 
 # Do not use the system Eigen
-#set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")
-#set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
-find_package(Eigen3 3.3.9 REQUIRED)
-include_directories(${EIGEN_INCLUDE_DIR})
-
+set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")
+set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
 
 # The cub package
 set(CUB_DIR "${CMAKE_SOURCE_DIR}/external/cub-1.8.0")
