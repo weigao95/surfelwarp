@@ -33,11 +33,12 @@ int main(int argc, char** argv) {
 	bool offline_rendering = true;
 
 	//The processing loop
-	SurfelWarpSerial::Ptr fusion = std::make_shared<SurfelWarpSerial>();
-	fusion->ProcessFirstFrame();
+	SurfelWarpSerial fusion;
+
+	fusion.ProcessFirstFrame();
 	for(auto i = 0; i < config.num_frames(); i++){
 		LOG(INFO) << "The " << i << "th Frame";
-		fusion->ProcessNextFrameWithReinit(offline_rendering);
+		fusion.ProcessNextFrameWithReinit(offline_rendering);
 	}
 	
 	//destroyCudaContext(context);

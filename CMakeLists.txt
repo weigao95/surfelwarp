@@ -12,10 +12,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Cuda
 find_package(CUDA 9 REQUIRED)
 include_directories(${CUDA_INCLUDE_DIRS})
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_60")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
+set(CUDA_ARCH "50 through 61" CACHE STRING "Architecture(s) for which to generate CUDA PTX code")
+if(CUDA_VERSION_MAJOR LESS 10)
+    set_property(CACHE CUDA_ARCH PROPERTY STRINGS "50 through 61" "50" "60" "61")
+else()
+    set_property(CACHE CUDA_ARCH PROPERTY STRINGS "50 through 61" "50" "60" "61" "70" "72" "75")
+endif()
+if(CUDA_ARCH STREQUAL "50 through 61")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_60")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
+else()
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_${CUDA_ARCH}")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}")
+endif()
 
 # GLFW package
 find_package(glfw3 REQUIRED)
@@ -65,9 +76,11 @@ endif(UNIX)
 set(CMAKE_DEBUG_POSTFIX d)
 
 # Do not use the system Eigen
-set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")
-set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
+#set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")
+#set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
+find_package(Eigen3 3.3.9 REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIR})
+
 
 # The cub package
 set(CUB_DIR "${CMAKE_SOURCE_DIR}/external/cub-1.8.0")

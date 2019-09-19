@@ -18,12 +18,10 @@ target_link_libraries(core_lib imgproc_lib)
 target_link_libraries(core_lib solver_lib)
 
 #Link the graphic lib
-if(UNIX)
-    target_link_libraries(core_lib ${GLFW_LIBRARIES})
-endif(UNIX)
+target_link_libraries(core_lib glfw)
 
-#On windows, the glfw lib is built separately
+
 if(WIN32)
+    #In MSVC, alignments must be extendable for Eigen vectorizations
 	target_compile_definitions(core_lib PUBLIC _ENABLE_EXTENDED_ALIGNED_STORAGE)
-    target_link_libraries(core_lib glfw)
 endif(WIN32)
