@@ -16,7 +16,7 @@ The code was originally developed with `CUDA 9` and `PCL 1.8` on Visual Studio 2
 
 According to your environment, please follow the specific build instruction:
 
-- [Ubuntu 16.04 with `CUDA 9`](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_pcl_build.md) (note that `CUDA 10` doesn't work with `PCL 1.8`)
+- [Ubuntu 16.04 with `CUDA 9`](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_pcl_build.md) (note that `CUDA 10` doesn't work with this one)
 - [Ubuntu 16.04/18.04 with  `CUDA >= 9` (`CUDA 10` is OK) and `cilantro`](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_cliantro_build.md) 
 - [Windows 10 with `CUDA 9`  and `PCL 1.8`](https://github.com/weigao95/surfelwarp/blob/master/doc/windows_pcl_build.md) 
 - [Windows 10 with  `CUDA >= 9` (`CUDA 10` is OK) and `cilantro`](https://github.com/weigao95/surfelwarp/blob/master/doc/windows_cilantro_build.md) 
