@@ -1,6 +1,6 @@
 ### Building SurfelWarp on Ubuntu 16.04 with `PCL 1.8`
 
-You need a nvidia GPU with `CUDA 9`  installed. Note that `CUDA 10` is not compatible with `PCL 1.8` and doesn' work. If you want to build with `CUDA 10`, please follow this document.
+You need a nvidia GPU with `CUDA 9`  installed. Note that `CUDA 10` is not compatible with `PCL 1.8` and doesn' work. If you want to build with `CUDA 10`, please follow [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_cliantro_build.md).
 
 To choose the CUDA architecture [compatible](https://en.wikipedia.org/wiki/CUDA#GPUs_supported) with your `CUDA` version and graphics card, thereby also reducing compile time, pass `-DCUDA_ARCH=<arg>` to CMake, where `<arg>` is a two-digit compile compatibility version, e.g. "61", or choose this number from the corresponding drop-down in `cmake-gui`.
 
