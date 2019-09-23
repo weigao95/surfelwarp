@@ -54,7 +54,7 @@ namespace surfelwarp
 		const DeviceArray<DepthSurfel>& surfel_array,
 		PointCloud3f_Pointer& point_cloud,
 #ifdef WITH_PCL
-		PointCloudNormal& normal_cloud,
+		PointCloudNormal_Pointer& normal_cloud,
 #endif
 		const float point_scale = 1000.0f
 	);
