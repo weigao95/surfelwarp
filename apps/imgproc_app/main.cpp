@@ -2,7 +2,7 @@
 // Created by wei on 5/29/18.
 //
 #include "common/ConfigParser.h"
-#include "imgproc/FileFetch.h"
+#include "imgproc/frameio/VolumeDeformFileFetch.h"
 #include "imgproc/ImageProcessor.h"
 #include "visualization/Visualizer.h"
 

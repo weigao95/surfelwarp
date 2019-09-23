@@ -11,7 +11,7 @@
 #include "common/DeviceBufferArray.h"
 #include "common/CameraObservation.h"
 #include "math/device_mat.h"
-#include "imgproc/FetchInterface.h"
+#include "imgproc/frameio/FetchInterface.h"
 #include "imgproc/segmentation/ForegroundSegmenter.h"
 #include "imgproc/correspondence/ImagePairCorrespondence.h"
 

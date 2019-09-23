@@ -1,23 +1,23 @@
 #pragma once
-#include "imgproc/FetchInterface.h"
+#include "FetchInterface.h"
 #include <string>
 #include <boost/filesystem.hpp>
 
 namespace surfelwarp
 {
-	class FileFetch : public FetchInterface
+	class VolumeDeformFileFetch : public FetchInterface
 	{
 	public:
-		using Ptr = std::shared_ptr<FileFetch>;
+		using Ptr = std::shared_ptr<VolumeDeformFileFetch>;
 		using path = boost::filesystem::path;
 
 		//Just copy the string to data path
-		explicit FileFetch(
+		explicit VolumeDeformFileFetch(
 			const path& data_path
 		) : m_data_path(data_path) {}
 
 		
-		~FileFetch() = default;
+		~VolumeDeformFileFetch() = default;
 
 		//Main interface
 		void FetchDepthImage(size_t frame_idx, cv::Mat& depth_img) override;

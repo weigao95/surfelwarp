@@ -8,6 +8,7 @@
 #include "core/warp_solver/WarpSolver.h"
 #include "core/geometry/SurfelNodeDeformer.h"
 #include "visualization/Visualizer.h"
+#include "imgproc/frameio/FetchInterface.h"
 
 
 #include <thread>
@@ -19,7 +20,7 @@ surfelwarp::SurfelWarpSerial::SurfelWarpSerial() {
 	const auto& config = ConfigParser::Instance();
 	
 	//Construct the image processor
-	FileFetch::Ptr fetcher = std::make_shared<FileFetch>(config.data_path());
+	FetchInterface::Ptr fetcher = std::make_shared<VolumeDeformFileFetch>(config.data_path());
 	m_image_processor = std::make_shared<ImageProcessor>(fetcher);
 	
 	//Construct the holder for surfel geometry
