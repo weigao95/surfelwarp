@@ -12,31 +12,16 @@ Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynam
 
 ### Build Instructions
 
-The code was originally developed on Visual Studio 2015 with `CUDA 9` and `PCL 1.8` and successfully tested on Ubuntu 16.04. Note that `CUDA 10` and higher versions are not compatible with `PCL 1.8`. However, you can now chose to use the `cilantro` library instead of `PCL`, making the code compatible with any version of `CUDA` starting with `CUDA 9` and above. The code was also successfuly tested with the `cilantro` option on Ubuntu 18.04 with gcc 7.4 and Windows 10 with Visual Studio 2017. Also note that, for some unknown reason, the code runs much slower on Ubuntu (seems to be problem with GPU driver that only permits Debug mode).
+The code was originally developed with `CUDA 9` and `PCL 1.8` on Visual Studio 2015 and Ubuntu 16.04. Thanks to the contribution by [@Algomorph](https://github.com/Algomorph), the code works with higher version of `CUDA`, Ubuntu 18.04 and Visual Studio 2017. Also note that, for some unknown reason, the code runs much slower on Ubuntu (seems to be problem with GPU driver that only permits Debug mode).
 
-To switch to `cilantro` and effectively remove the `PCL` dependency, pass `-DVISUALIZATION_LIBRARY=cilantro` and `-Dcilantro_DIR=<path_to_cilantro_install_directory>` when you run `cmake` or fill in the corresponding `cmake-gui` options. You will have to build `cilantro` and its dependency, `Pangolin`, from scratch, which should be relatively easy and is explained further.
+According to your environment, please follow the specific build instruction:
 
-To choose the CUDA architecture [compatible](https://en.wikipedia.org/wiki/CUDA#GPUs_supported) with your `CUDA` version and graphics card, thereby also reducing compile time, pass `-DCUDA_ARCH=<arg>` to CMake, where `<arg>` is a two-digit compile compatibility version, e.g. "61", or choose this number from the corresponding drop-down in `cmake-gui`.
+- [Ubuntu 16.04 with `CUDA 9` and `PCL 1.8`](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_pcl_build.md) (note that `CUDA 10` doesn't work with `PCL 1.8`)
+- [Ubuntu 16.04/18.04 with  `CUDA >= 9` (`CUDA 10` is OK) and `cilantro`](https://github.com/weigao95/surfelwarp/blob/master/doc/ubuntu_cliantro_build.md) 
+- [Windows 10 with `CUDA 9`  and `PCL 1.8`](https://github.com/weigao95/surfelwarp/blob/master/doc/windows_pcl_build.md) 
+- [Windows 10 with  `CUDA >= 9` (`CUDA 10` is OK) and `cilantro`](https://github.com/weigao95/surfelwarp/blob/master/doc/windows_cilantro_build.md) 
 
-In addition to `CUDA` and `PCL`/`cilantro`, the code depends on `OpenCV` and `GLFW`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows. On Ubuntu, you can run the following command to install the dependencies:
-
-```shell
-sudo apt-get install libpcl-dev libopencv-dev libglfw3 libglfw3-dev
-```
-
-Now you are ready to build (add cmake arguments as nescessary):
-
-```shell
-git clone https://github.com/weigao95/surfelwarp
-cd surfelwarp
-mkdir build && cd build
-cmake ..
-make
-```
-#### Building _cilantro_ and _Pangolin_
-For instructions on building cilantro and Pangolin via Linux terminal, please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/cilantro_build.md).
-#### Building on Windows
-For instructions on building SurfelWarp and its dependencies on Windows, please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform (The `-arch` flag for this executable is `sm_60`).
+We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform (The CUDA  `-arch` flag for this executable is `sm_60`).
 
 ### Run Instructions
 

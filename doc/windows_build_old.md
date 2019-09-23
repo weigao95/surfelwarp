@@ -1,7 +1,6 @@
 ### Building SurfelWarp on Windows
 
-Building with `PCL` has been tested on Visual Studio 2015 with `CUDA 9.2`  and `cmake 3.9.6`. Note that `CUDA 10` and higher versions are not compatible with `PCL`. Building with `cilantro` instead of `PCL` has been tested on 
-Visual Studio 2017 also with `CUDA 9.2`, but, should in theory, also work with any version of `CUDA 10` as well. `CUDA` and `cmake` can be installed from their official websites. The community version of Visual Studio is sufficient. `OpenCV` can be downloaded from the official website as a prebuilt-binaries-and-header package and extracted to a location of your choosing. 
+Building with `PCL` has been tested on Visual Studio 2015 with `CUDA 9.2`  and `cmake 3.9.6`. Note that `CUDA 10` and higher versions are not compatible with `PCL`. Building with `cilantro` instead of `PCL` has been tested on Visual Studio 2017 also with `CUDA 9.2`, but, should in theory, also work with any version of `CUDA 10` as well. `CUDA` and `cmake` can be installed from their official websites. The community version of Visual Studio is sufficient. `OpenCV` can be downloaded from the official website as a prebuilt-binaries-and-header package and extracted to a location of your choosing. 
 
 **This code and all its dependencies MUST be built in 64 bit**. In other words, you should select the **Win64** (or, for later CMake versions, **x64**) generator in `cmake`.
 
