@@ -30,8 +30,8 @@ void surfelwarp::Visualizer::DrawPointCloud(const PointCloud3f_Pointer &point_cl
     viewer.addCoordinateSystem(2.0, "point cloud", 0);
     viewer.setBackgroundColor(0.05, 0.05, 0.05, 1);
     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "point cloud");
-    while (!viewer->wasStopped()) {
-        viewer->spinOnce();
+    while (!viewer.wasStopped()) {
+        viewer.spinOnce();
     }
 #elif defined(WITH_CILANTRO)
     cilantro::Visualizer viewer(window_title, "display");
@@ -507,7 +507,7 @@ void surfelwarp::Visualizer::DrawMatchedRGBCloudPair(
     PointCloud3fRGB_Pointer transformed_cloud_1 = transformPointCloudRGB(cloud_1, from1To2);
 
     //Hand in to drawer
-    DrawMatchedCloudPair(transformed_cloud_1, cloud_2);
+	DrawMatchedRGBCloudPair(transformed_cloud_1, cloud_2);
 }
 
 void surfelwarp::Visualizer::DrawMatchedCloudPair(
@@ -521,7 +521,7 @@ void surfelwarp::Visualizer::DrawMatchedCloudPair(
             DeviceArray<float4>((float4 *) surfel_array.RawPtr(), surfel_array.Size()),
             DeviceArray<float4>((float4 *) color_time_array.RawPtr(), color_time_array.Size())
     );
-    DrawMatchedCloudPair(cloud_1, cloud_2, camera2world);
+	DrawMatchedRGBCloudPair(cloud_1, cloud_2, camera2world);
 }
 
 
