@@ -5,54 +5,114 @@ project(surfelwarp)
 # Add cmake module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+# Language options
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Cuda
-find_package(CUDA 9 EXACT REQUIRED)
+find_package(CUDA 9 REQUIRED)
 include_directories(${CUDA_INCLUDE_DIRS})
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_60")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
+set(CUDA_ARCH "50 through 61" CACHE STRING "Architecture(s) for which to generate CUDA PTX code")
+if(CUDA_VERSION_MAJOR LESS 10)
+    set_property(CACHE CUDA_ARCH PROPERTY STRINGS "50 through 61" "50" "60" "61")
+else()
+    set_property(CACHE CUDA_ARCH PROPERTY STRINGS "50 through 61" "50" "60" "61" "70" "72" "75")
+endif()
+if(CUDA_ARCH STREQUAL "50 through 61")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_60")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_50,code=sm_50")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_60,code=sm_60")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_61,code=sm_61")
+else()
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_${CUDA_ARCH}")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode=arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}")
+endif()
 
-# The library built on windows platform
-if(WIN32)
-    # Point cloud library and a series
-    set(PCL_DIR "C:/Developer/ShareLib/PCL_GPU/cmake")
+# GLFW package
+find_package(glfw3 REQUIRED)
 
-    # OpenCV lib
-    set(OpenCV_DIR "C:/Developer/ShareLib/opencv_gpu_world/")
 
-    # GLFW
-    include("C:/Developer/ShareLib/GLFW/lib/cmake/glfw3/glfw3Config.cmake")
-    include_directories("C:/Developer/ShareLib/GLFW/include")
-endif(WIN32)
+# The library and compiler flags on Windows
+if(MSVC)
+    option( MSVC_USE_STATIC_CRT  "Use static C Runtime with MSVC, /MT instead of /MD" ON)
 
+    # Make sure there are no erroneous C Runtime flags
+    list(APPEND FLAG_VARS
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO
+    )
+    if(MSVC_USE_STATIC_CRT)
+        foreach(FLAG_VAR ${FLAG_VARS})
+            string(REGEX REPLACE "/MD" "/MT" NEW_FLAGS "${${FLAG_VAR}}")
+            set(${FLAG_VAR} "${NEW_FLAGS}" CACHE STRING "" FORCE)
+        endforeach()
+    else()
+        foreach(FLAG_VAR ${FLAG_VARS})
+            string(REGEX REPLACE "/MT" "/MD" NEW_FLAGS "${${FLAG_VAR}}")
+            set(${FLAG_VAR} "${NEW_FLAGS}" CACHE STRING "" FORCE)
+        endforeach()
+    endif()
+
+	# Provisions for typical Boost compiled on Windows
+    # Most commonly, Boost libraries are compiled statically on windows (change as necesssary)
+    set(Boost_USE_STATIC_LIBS TRUE)
+	if(MSVC_USE_STATIC_CRT)
+		set(Boost_USE_STATIC_RUNTIME ON)
+	else()
+		set(Boost_USE_STATIC_RUNTIME OFF)
+	endif()
+	set(Boost_USE_MULTITHREADED ON)
+	set(Boost_USE_DEBUG_RUNTIME ON)
+	set(Boost_USE_DEBUG_PYTHON OFF)
+endif(MSVC)
 # The library and compiler flags on Ubuntu
 if(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -g -G")
-
-    # GLFW package
-    find_package(GLFW REQUIRED)
-    include_directories(${GLFW_INCLUDE_DIR})
 endif(UNIX)
+
+# Append "d" to library versions with debugging symbols
+set(CMAKE_DEBUG_POSTFIX d)
 
 # Do not use the system Eigen
 set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/external/eigen3.4")
 set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
-include_directories(${EIGEN_INCLUDE_DIR})
 
 # The cub package
 set(CUB_DIR "${CMAKE_SOURCE_DIR}/external/cub-1.8.0")
 include_directories(${CUB_DIR})
 
-# Point cloud library and a series
-find_package(PCL REQUIRED)
-include_directories(${PCL_INCLUDE_DIRS})
+# Point cloud library and a series / cilantro
+
+
+set(VISUALIZATION_LIBRARY "PCL" CACHE STRING "Which library to use for visualization")
+set_property(CACHE VISUALIZATION_LIBRARY PROPERTY STRINGS "PCL" "cilantro")
+if(VISUALIZATION_LIBRARY STREQUAL "PCL")
+    find_package(PCL REQUIRED)
+    include_directories(${PCL_INCLUDE_DIRS})
+    add_definitions(-DWITH_PCL)
+elseif(VISUALIZATION_LIBRARY STREQUAL "cilantro")
+    find_package(cilantro REQUIRED)
+    include_directories(${cilantro_INCLUDE_DIRS})
+    add_definitions(-DWITH_CILANTRO)
+    # workaround for https://github.com/kzampog/cilantro/issues/37
+    find_package(Pangolin REQUIRED)
+    list(APPEND cilantro_LIBRARIES ${Pangolin_LIBRARIES})
+    # workaround for OpenMP flags not propagating from cilantro
+    find_package(OpenMP)
+    if(OPENMP_FOUND)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif()
+endif()
+
 
 # Check the CUDA version and resolve confliction with pcl
 if(${CUDA_VERSION_MAJOR} LESS 11)
-    list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+    if(VISUALIZATION_LIBRARY STREQUAL "PCL")
+        list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+    endif()
     get_directory_property(dir_defs DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
     set(vtk_flags)
     foreach(it ${dir_defs})
@@ -71,6 +131,7 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIR})
 
 # The boost library is contained in pcl
+find_package(Boost REQUIRED COMPONENTS system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # The project directory shall also be included

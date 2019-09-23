@@ -1,11 +1,12 @@
 #include <opencv2/opencv.hpp>
+#include "common/OpenCV_CrossPlatform.h"
 #include "imgproc/FileFetch.h"
 
 void surfelwarp::FileFetch::FetchDepthImage(size_t frame_idx, cv::Mat & depth_img)
 {
 	path file_path = FileNameSurfelWarp(frame_idx, true);
 	//Read the image
-	depth_img = cv::imread(file_path.string(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
+	depth_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH);
 }
 
 void surfelwarp::FileFetch::FetchDepthImage(size_t frame_idx, void * depth_img)
@@ -17,7 +18,7 @@ void surfelwarp::FileFetch::FetchRGBImage(size_t frame_idx, cv::Mat & rgb_img)
 {
 	path file_path = FileNameSurfelWarp(frame_idx, false);
 	//Read the image
-	rgb_img = cv::imread(file_path.string(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
+	rgb_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH);
 }
 
 void surfelwarp::FileFetch::FetchRGBImage(size_t frame_idx, void * rgb_img)

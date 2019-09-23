@@ -10,17 +10,21 @@ SurfelWarp is a dynamic reconstruction system similar to [DynamicFusion](https:/
 
 Wei Gao and Russ Tedrake, "SurfelWarp: Efficient Non-Volumetic Single View Dynamic Reconstruction", Robotics: Science and Systems (RSS) 2018  [[Project]](<https://sites.google.com/view/surfelwarp/home>)[[Paper]](https://arxiv.org/abs/1904.13073)[[Presentation]](https://www.youtube.com/watch?v=fexYm61VGMA)
 
-### Build Instruction
+### Build Instructions
 
-The code is developed on Visual Studio 2015 with `CUDA 9` . Note that `CUDA 10` and higher versions are not compatible with `pcl 1.8` and don't work. The code also works with Ubuntu 16.04, but for unknown reason it runs much slower on ubuntu (seems to be problem with GPU driver that only permits Debug mode). You might need to update [these lines](https://github.com/weigao95/surfelwarp/blob/4dd7a99b4cf92ebc168a592616554a54eee98a7b/CMakeLists.txt#L11) of the build script according to your GPU (the default is for Nvidia Titan Xp).
+The code was originally developed on Visual Studio 2015 with `CUDA 9` and `PCL 1.8` and successfully tested on Ubuntu 16.04. Note that `CUDA 10` and higher versions are not compatible with `PCL 1.8`. However, you can now chose to use the `cilantro` library instead of `PCL`, making the code compatible with any version of `CUDA` starting with `CUDA 9` and above. The code was also successfuly tested with the `cilantro` option on Ubuntu 18.04 with gcc 7.4 and Windows 10 with Visual Studio 2017. Also note that, for some unknown reason, the code runs much slower on Ubuntu (seems to be problem with GPU driver that only permits Debug mode).
 
-In addition to `cuda`, the code depends on `pcl` , `opencv` and `glfw`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows. For Ubuntu 16.04, you can run the following command to install the dependency
+To switch to `cilantro` and effectively remove the `PCL` dependency, pass `-DVISUALIZATION_LIBRARY=cilantro` and `-Dcilantro_DIR=<path_to_cilantro_install_directory>` when you run `cmake` or fill in the corresponding `cmake-gui` options. You will have to build `cilantro` and its dependency, `Pangolin`, from scratch, which should be relatively easy and is explained further.
+
+To choose the CUDA architecture [compatible](https://en.wikipedia.org/wiki/CUDA#GPUs_supported) with your `CUDA` version and graphics card, thereby also reducing compile time, pass `-DCUDA_ARCH=<arg>` to CMake, where `<arg>` is a two-digit compile compatibility version, e.g. "61", or choose this number from the corresponding drop-down in `cmake-gui`.
+
+In addition to `CUDA` and `PCL`/`cilantro`, the code depends on `OpenCV` and `GLFW`. On Ubuntu, these dependencies can be installed with `apt`, while they need to be built from source on windows. On Ubuntu, you can run the following command to install the dependencies:
 
 ```shell
 sudo apt-get install libpcl-dev libopencv-dev libglfw3 libglfw3-dev
 ```
 
-Now you are ready to build
+Now you are ready to build (add cmake arguments as nescessary):
 
 ```shell
 git clone https://github.com/weigao95/surfelwarp
@@ -29,10 +33,12 @@ mkdir build && cd build
 cmake ..
 make
 ```
+#### Building _cilantro_ and _Pangolin_
+For instructions on building cilantro and Pangolin via Linux terminal, please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/cilantro_build.md).
+#### Building on Windows
+For instructions on building SurfelWarp and its dependencies on Windows, please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform (The `-arch` flag for this executable is `sm_60`).
 
-For build on windows please refer to [this document](https://github.com/weigao95/surfelwarp/blob/master/doc/windows%20build.md). We also provide a [pre-built binary](https://github.com/weigao95/surfelwarp/tree/master/test_data/binary) for the windows platform (The `arch` flag for this executable is `sm_60`).
-
-### Run Instruction
+### Run Instructions
 
 We use the [VolumeDeform dataset](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/) to illustrate how to run the code. An example configuration file is provided [here](https://github.com/weigao95/surfelwarp/blob/master/test_data/boxing_config.json) for the "boxing" sequence. First, you need to download the boxing sequence from the VolumeDeform dataset and extract it to `data_root`, your file structure should look like
 

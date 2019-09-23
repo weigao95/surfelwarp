@@ -5,7 +5,6 @@
 #include "math/device_mat.h"
 
 #include <device_launch_parameters.h>
-#include <pcl/common/time.h>
 
 namespace surfelwarp { namespace device {
 

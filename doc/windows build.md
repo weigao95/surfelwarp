@@ -1,9 +1,12 @@
-### Build SurfelWarp on Windows
+### Building SurfelWarp on Windows
 
-The building has been tested on Visual Studio 2015 with `CUDA 9.2`  and `cmake 3.9.6`. The `CUDA 10` and higher versions are not compatible with `pcl`, thus please use `CUDA 9`. The Visual Studio, `CUDA` and `cmake` can be installed from their official websites. The community version of Visual Studio is sufficient.
+Building with `PCL` has been tested on Visual Studio 2015 with `CUDA 9.2`  and `cmake 3.9.6`. Note that `CUDA 10` and higher versions are not compatible with `PCL`. Building with `cilantro` instead of `PCL` has been tested on 
+Visual Studio 2017 also with `CUDA 9.2`, but, should in theory, also work with any version of `CUDA 10` as well. `CUDA` and `cmake` can be installed from their official websites. The community version of Visual Studio is sufficient. `OpenCV` can be downloaded from the official website as a prebuilt-binaries-and-header package and extracted to a location of your choosing. 
 
-**This code and all its dependencies MUST be built in 64 bit**. In other words, you should select the **Visual Studio 14 2015 Win64** generator in `cmake`. 
+**This code and all its dependencies MUST be built in 64 bit**. In other words, you should select the **Win64** (or, for later CMake versions, **x64**) generator in `cmake`.
 
-The building and installing procedure for `pcl`, `opencv` and `glfw` are very similar. These packages are managed by `cmake` and you can follow the standard procedure to generate the Visual Studio Solution. After solution generation, you can build and install the package using the `INSALL` project inside the solution. The standard configuration of these packages should be sufficient, although some debug code might require the gpu support of `pcl`.
+The build-and-installation procedures for `Pangolin`, `cilantro`, `PCL`, and `GLFW` are very similar. Note that `cilantro` requires the `Eigen` to be properly installed via CMake, and you might as well use the aready-provided version of `Eigen` in `external/eigen3.4` for this. All of these packages are managed by `CMake` and you can follow the standard procedure to generate the Visual Studio solution. After solution generation, open it in Visual Studio running as an administrator (right-click the VS icon and choose `Run as administrator`). You can then build and install the package using the `INSALL` project inside the solution. The standard configuration of these packages should be sufficient, although some debug code might require the GPU support of `PCL`.
 
-Now you are ready to build this repo. You need to change [these lines](https://github.com/weigao95/surfelwarp/blob/6265b3aed872f61f8e504f0216631e36579e191d/CMakeLists.txt#L16) of `CMakeLists.txt`  to your local install directories of `pcl`, `opencv` and `glfw`. After that, just follow the standard procedure of `cmake` and Visual Studio to build this repo. 
+Now you are ready to build this repo. To tell CMake where to find the dependencies, you can set `PCL_DIR` to the location of _PCLConfig.cmake_ on disk, and likewise for `glfw3_DIR`, `OpenCV_DIR`, and/or any other dependencies. Alternatively, add these as permanent [environment variables](https://www.architectryan.com/2018/08/31/how-to-change-environment-variables-on-windows-10/) to simplify future builds.  After that, just follow the standard `CMake` and Visual Studio workflow to build this repo. 
+
+ 

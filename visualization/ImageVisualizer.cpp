@@ -4,7 +4,7 @@
 
 #include "common/data_transfer.h"
 #include "visualization/Visualizer.h"
-#include <pcl/visualization/pcl_visualizer.h>
+//#include <pcl/visualization/pcl_visualizer.h>
 
 
 /* The depth image drawing methods

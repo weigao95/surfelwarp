@@ -3,6 +3,7 @@
 //
 
 #include "common/logging.h"
+#include "common/OpenCV_CrossPlatform.h"
 #include "common/Constants.h"
 #include "common/ConfigParser.h"
 #include "common/common_texture_utils.h"
@@ -64,7 +65,7 @@ boost::filesystem::path surfelwarp::ForegroundSegmenterOffline::getSegmentMaskPa
 void surfelwarp::ForegroundSegmenterOffline::Segment(cudaStream_t stream) {
 	//Read the image from file
 	const auto file_name = getSegmentMaskPath(m_frame_idx);
-	m_foreground_mask_host = cv::imread(file_name.string(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
+	m_foreground_mask_host = cv::imread(file_name.string(), CV_ANYCOLOR | CV_ANYDEPTH);
 	
 	//Upload to texture
 	cudaSafeCall(cudaMemcpyToArrayAsync(

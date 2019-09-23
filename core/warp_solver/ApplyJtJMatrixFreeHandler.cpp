@@ -4,7 +4,6 @@
 
 #include "common/sanity_check.h"
 #include "core/warp_solver/ApplyJtJMatrixFreeHandler.h"
-#include <pcl/common/time.h>
 
 void surfelwarp::ApplyJtJHandlerMatrixFree::AllocateBuffer() {
 	m_jacobian_dot_x.AllocateBuffer(kMaxNumScalarResidualTerms);

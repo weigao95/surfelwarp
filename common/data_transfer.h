@@ -4,8 +4,8 @@
 #include "common/surfel_types.h"
 #include "common/ArrayView.h"
 #include <opencv2/opencv.hpp>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
+#include <memory>
+#include "common/point_cloud_typedefs.h"
 
 
 namespace surfelwarp
@@ -28,7 +28,7 @@ namespace surfelwarp
 	//The segmentation mask texture
 	void downloadSegmentationMask(cudaTextureObject_t mask, std::vector<unsigned char>& h_mask);
 	cv::Mat downloadRawSegmentationMask(cudaTextureObject_t mask); //uchar texture
-	
+
 	//The gray scale image
 	void downloadGrayScaleImage(cudaTextureObject_t image, cv::Mat& h_image, float scale = 1.0f);
 
@@ -39,60 +39,70 @@ namespace surfelwarp
 
 	/* The point cloud download functions
 	 */
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(const DeviceArray<float4>& vertex);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(const DeviceArray2D<float4>& vertex_map);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(const DeviceArray2D<float4>& vertex_map, DeviceArrayView<unsigned> indicator);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(const DeviceArray2D<float4>& vertex_map, DeviceArrayView<ushort2> pixel);
+	PointCloud3f_Pointer downloadPointCloud(const DeviceArray<float4>& vertex);
+	PointCloud3f_Pointer downloadPointCloud(const DeviceArray2D<float4>& vertex_map);
+	PointCloud3f_Pointer downloadPointCloud(const DeviceArray2D<float4>& vertex_map, DeviceArrayView<unsigned> indicator);
+	PointCloud3f_Pointer downloadPointCloud(const DeviceArray2D<float4>& vertex_map, DeviceArrayView<ushort2> pixel);
 	void downloadPointCloud(const DeviceArray2D<float4>& vertex_map, std::vector<float4>& point_cloud);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(cudaTextureObject_t vertex_map);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<unsigned> indicator);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<ushort2> pixel);
+	PointCloud3f_Pointer downloadPointCloud(cudaTextureObject_t vertex_map);
+	PointCloud3f_Pointer downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<unsigned> indicator);
+	PointCloud3f_Pointer downloadPointCloud(cudaTextureObject_t vertex_map, DeviceArrayView<ushort2> pixel);
 	void downloadPointCloud(cudaTextureObject_t vertex_map, std::vector<float4>& point_cloud);
+
+
 	void downloadPointNormalCloud(
 		const DeviceArray<DepthSurfel>& surfel_array,
-		pcl::PointCloud<pcl::PointXYZ>::Ptr& point_cloud,
-		pcl::PointCloud<pcl::Normal>::Ptr& normal_cloud,
+		PointCloud3f_Pointer& point_cloud,
+#ifdef WITH_PCL
+		PointCloudNormal_Pointer& normal_cloud,
+#endif
 		const float point_scale = 1000.0f
 	);
-	
+
 	//Download it with indicator
 	void separateDownloadPointCloud(
 		const DeviceArrayView<float4>& point_cloud,
 		const DeviceArrayView<unsigned>& indicator,
-		pcl::PointCloud<pcl::PointXYZ>& fused_cloud,
-		pcl::PointCloud<pcl::PointXYZ>& unfused_cloud
+		PointCloud3f_Pointer& fused_cloud,
+		PointCloud3f_Pointer& unfused_cloud
 	);
 	void separateDownloadPointCloud(
 		const DeviceArrayView<float4>& point_cloud,
 		unsigned num_remaining_surfels,
-		pcl::PointCloud<pcl::PointXYZ>& remaining_cloud,
-		pcl::PointCloud<pcl::PointXYZ>& appended_cloud
+		PointCloud3f_Pointer& remaining_cloud,
+		PointCloud3f_Pointer& appended_cloud
 	);
 
 	/* The normal cloud download functions
 	*/
-	pcl::PointCloud<pcl::Normal>::Ptr downloadNormalCloud(const DeviceArray<float4>& normal_cloud);
-	pcl::PointCloud<pcl::Normal>::Ptr downloadNormalCloud(const DeviceArray2D<float4>& normal_map);
-	pcl::PointCloud<pcl::Normal>::Ptr downloadNormalCloud(cudaTextureObject_t normal_map);
-	
-	
+#ifdef WITH_PCL
+	PointCloudNormal_Pointer downloadNormalCloud(const DeviceArray<float4>& normal_cloud);
+	PointCloudNormal_Pointer downloadNormalCloud(const DeviceArray2D<float4>& normal_map);
+	PointCloudNormal_Pointer downloadNormalCloud(cudaTextureObject_t normal_map);
+#elif defined(WITH_CILANTRO)
+	void downloadNormalCloud(const DeviceArray<float4>& normal_cloud, PointCloudNormal_Pointer& point_cloud);
+	void downloadNormalCloud(const DeviceArray2D<float4>& normal_map, PointCloudNormal_Pointer& point_cloud);
+	void downloadNormalCloud(cudaTextureObject_t normal_map, PointCloudNormal_Pointer& point_cloud);
+#endif
+
+
 	/* The colored point cloud download function
 	 */
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr downloadColoredPointCloud(
+	PointCloud3fRGB_Pointer downloadColoredPointCloud(
 		const DeviceArray<float4>& vertex_confid,
 		const DeviceArray<float4>& color_time
 	);
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr downloadColoredPointCloud(
+	PointCloud3fRGB_Pointer downloadColoredPointCloud(
 		cudaTextureObject_t vertex_map,
 		cudaTextureObject_t color_time_map,
 		bool flip_color = false
 	);
-	
-	
+
+
 	/* Colorize the point cloud
 	 */
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr addColorToPointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr& point_cloud, uchar4 rgba);
-	
+	PointCloud3fRGB_Pointer addColorToPointCloud(const PointCloud3f_Pointer& point_cloud, uchar4 rgba);
+
 
 	/* Query the index map
 	 */
@@ -103,8 +113,8 @@ namespace surfelwarp
 	 */
 	template<typename T>
 	void textureToMap2D(
-		cudaTextureObject_t texture, 
-		DeviceArray2D<T>& map, 
+		cudaTextureObject_t texture,
+		DeviceArray2D<T>& map,
 		cudaStream_t stream = 0
 	);
 }
