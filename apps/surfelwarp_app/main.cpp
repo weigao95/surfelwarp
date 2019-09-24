@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 	//auto context = initCudaContext();
 
 	//Save offline
-	bool offline_rendering = false;
+	bool offline_rendering = true;
 
 	//The processing loop
 	SurfelWarpSerial fusion;

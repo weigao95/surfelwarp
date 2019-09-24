@@ -30,7 +30,7 @@ boost::filesystem::path surfelwarp::VolumeDeformFileFetch::FileNameVolumeDeform(
 {
 	//Construct the file_name
 	char frame_idx_str[20];
-	sprintf(frame_idx_str, "%06d", frame_idx);
+	sprintf(frame_idx_str, "%06d", static_cast<int>(frame_idx));
 	std::string file_name = "frame-";
 	file_name += std::string(frame_idx_str);
 	if (is_depth_img) {

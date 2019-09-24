@@ -5,6 +5,11 @@
 
 namespace surfelwarp
 {
+	/**
+	 * \brief Utility for fetching depth & RGB frames specifically in the format of the VolumeDeform dataset, i.e.
+	 * depth frames named as "frame-000000.depth.png" and RBG frames named as "frame-000000.color.png", where zeros are
+	 * replaced by the zero-based frame index padded on the left by zeroes to be 6 characters long.
+	 */
 	class VolumeDeformFileFetch : public FetchInterface
 	{
 	public:
@@ -16,7 +21,7 @@ namespace surfelwarp
 			const path& data_path
 		) : m_data_path(data_path) {}
 
-		
+
 		~VolumeDeformFileFetch() = default;
 
 		//Main interface
@@ -32,7 +37,4 @@ namespace surfelwarp
 		path FileNameVolumeDeform(size_t frame_idx, bool is_depth_img) const;
 		path FileNameSurfelWarp(size_t frame_idx, bool is_depth_img) const;
 	};
-
-
-
 }
