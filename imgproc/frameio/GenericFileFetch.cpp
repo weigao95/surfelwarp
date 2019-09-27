@@ -28,7 +28,7 @@
 namespace fs = boost::filesystem;
 
 surfelwarp::GenericFileFetch::GenericFileFetch(const fs::path& data_path, std::string extension, bool force_no_masks) :
-		m_mask_buffer_ix(SIZE_MAX)
+		m_mask_buffer_ix(SIZE_MAX), m_use_masks(false)
 {
 	std::vector<path> sorted_paths;
 	if (extension.length() > 0 && extension[0] != '.') {
@@ -61,18 +61,21 @@ surfelwarp::GenericFileFetch::GenericFileFetch(const fs::path& data_path, std::s
 
 	if (m_depth_image_paths.size() != m_rgb_image_paths.size()) {
 		LOG(FATAL) << "Presumed depth image count (" << m_depth_image_paths.size() <<
-		") doesn't equal presumed rgb image count." << m_rgb_image_paths.size();
+		           ") doesn't equal presumed rgb image count." << m_rgb_image_paths.size();
 	}
 
 	if (!force_no_masks) {
 		if (unexpected_mask_frame_number) {
 			LOG(WARNING)
 					<< "Warning: inconsistent mask frame numbers encountered in the filenames. Proceeding without masks.";
-		} else if (m_depth_image_paths.size() != m_mask_image_paths.size() && !m_mask_image_paths.empty()) {
-			LOG(WARNING) << "Warning: seems like there were some mask image files, but their number doesn't match the "
-			             "number of depth frames. Proceeding without masks.";
-		} else {
-			m_use_masks = true;
+		} else if (!m_mask_image_paths.empty()) {
+			if (m_depth_image_paths.size() != m_mask_image_paths.size() && !m_mask_image_paths.empty()) {
+				LOG(WARNING)
+						<< "Warning: seems like there were some mask image files, but their number doesn't match the "
+						   "number of depth frames. Proceeding without masks.";
+			} else {
+				m_use_masks = true;
+			}
 		}
 	}
 }
@@ -134,10 +137,10 @@ void surfelwarp::GenericFileFetch::FetchDepthImage(size_t frame_idx, cv::Mat& de
 		if (this->m_mask_buffer_ix != frame_idx) {
 			m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
 			                                 CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
-            m_mask_buffer_ix = frame_idx;
+			m_mask_buffer_ix = frame_idx;
 		}
 		cv::Mat masked;
-		depth_img.copyTo(masked,m_mask_image_buffer);
+		depth_img.copyTo(masked, m_mask_image_buffer);
 		mask_mutex.unlock();
 		depth_img = masked;
 	}
@@ -158,10 +161,10 @@ void surfelwarp::GenericFileFetch::FetchRGBImage(size_t frame_idx, cv::Mat& rgb_
 		if (this->m_mask_buffer_ix != frame_idx) {
 			m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
 			                                 CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
-            m_mask_buffer_ix = frame_idx;
+			m_mask_buffer_ix = frame_idx;
 		}
 		cv::Mat masked;
-		rgb_img.copyTo(masked,m_mask_image_buffer);
+		rgb_img.copyTo(masked, m_mask_image_buffer);
 		mask_mutex.unlock();
 		rgb_img = masked;
 	}
