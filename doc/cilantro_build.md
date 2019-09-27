@@ -25,7 +25,7 @@ Then:
 
 If the desired `Eigen` is installed system-wide, run:
  
- - `cmake .. -DCMAKE_INSTALL_PREFIX=../install_static -BUILD_SHARED_LIBRARIES=OFF`
+ - `cmake -DCMAKE_INSTALL_PREFIX=../install_static -BUILD_SHARED_LIBRARIES=OFF ..`
  
  Otherwise, append specification of Eigen's include folder, i.e.:
  `-DEIGEN_INCLUDE_DIR=<directory from which the Eigen/Eigen header can be accessed>`.
@@ -43,7 +43,7 @@ Adjust for your platform as necessary:
 
 - `git clone git@github.com:kzampog/cilantro.git`
 - `cd cilantro && mkdir build_static && mkdir install_static`
-- `cmake .. -DCMAKE_INSTALL_PREFIX=../install_static -DBUILD_SHARED_LIBRARIES=OFF -DPangolin_DIR=../Pangolin/install_static/lib/cmake/Pangolin`
+- `cmake -DCMAKE_INSTALL_PREFIX=../install_static -DBUILD_SHARED_LIBRARIES=OFF -DPangolin_DIR=../Pangolin/install_static/lib/cmake/Pangolin ..`
 (If the desired Eigen is in a non-default location, also add:  `-DEigen3_DIR=<path to Eigen3Config.cmake, e.g. external/eigen3.4/install/share/eigen3/cmake>`)
 
 - `make -j4 && make install`
