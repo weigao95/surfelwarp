@@ -1,7 +1,7 @@
 #include <iostream>
 #include "common/ConfigParser.h"
 #include "visualization/Visualizer.h"
-#include "imgproc/FileFetch.h"
+#include "imgproc/frameio/VolumeDeformFileFetch.h"
 #include "imgproc/ImageProcessor.h"
 #include "imgproc/segmentation/ForegroundSegmenterNaiveCRF.h"
 

@@ -6,7 +6,7 @@
 #include "common/ConfigParser.h"
 #include "common/data_transfer.h"
 #include "visualization/Visualizer.h"
-#include "imgproc/FileFetch.h"
+#include "imgproc/frameio/VolumeDeformFileFetch.h"
 #include "imgproc/ImageProcessor.h"
 #include "imgproc/correspondence/ImagePairCorrespondence.h"
 #include "imgproc/correspondence/PatchColliderRGBCorrespondence.h"
