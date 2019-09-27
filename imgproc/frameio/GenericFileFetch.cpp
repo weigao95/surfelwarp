@@ -23,6 +23,7 @@
 #include <regex>
 #include <iterator>
 #include <common/logging.h>
+#include <array>
 
 
 namespace fs = boost::filesystem;
