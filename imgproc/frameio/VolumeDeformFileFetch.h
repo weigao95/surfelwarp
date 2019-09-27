@@ -1,23 +1,28 @@
 #pragma once
-#include "imgproc/FetchInterface.h"
+#include "FetchInterface.h"
 #include <string>
 #include <boost/filesystem.hpp>
 
 namespace surfelwarp
 {
-	class FileFetch : public FetchInterface
+	/**
+	 * \brief Utility for fetching depth & RGB frames specifically in the format of the VolumeDeform dataset, i.e.
+	 * depth frames named as "frame-000000.depth.png" and RBG frames named as "frame-000000.color.png", where zeros are
+	 * replaced by the zero-based frame index padded on the left by zeroes to be 6 characters long.
+	 */
+	class VolumeDeformFileFetch : public FetchInterface
 	{
 	public:
-		using Ptr = std::shared_ptr<FileFetch>;
+		using Ptr = std::shared_ptr<VolumeDeformFileFetch>;
 		using path = boost::filesystem::path;
 
 		//Just copy the string to data path
-		explicit FileFetch(
+		explicit VolumeDeformFileFetch(
 			const path& data_path
 		) : m_data_path(data_path) {}
 
-		
-		~FileFetch() = default;
+
+		~VolumeDeformFileFetch() = default;
 
 		//Main interface
 		void FetchDepthImage(size_t frame_idx, cv::Mat& depth_img) override;
@@ -32,7 +37,4 @@ namespace surfelwarp
 		path FileNameVolumeDeform(size_t frame_idx, bool is_depth_img) const;
 		path FileNameSurfelWarp(size_t frame_idx, bool is_depth_img) const;
 	};
-
-
-
 }

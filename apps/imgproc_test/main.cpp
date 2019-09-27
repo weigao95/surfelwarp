@@ -3,7 +3,7 @@
 #include "common/ConfigParser.h"
 #include "common/CameraObservation.h"
 #include "visualization/Visualizer.h"
-#include "imgproc/FileFetch.h"
+#include "imgproc/frameio/VolumeDeformFileFetch.h"
 #include "imgproc/ImageProcessor.h"
 #include <iostream>
 #include <opencv2/opencv.hpp>

@@ -5,7 +5,7 @@
 #include "common/Constants.h"
 #include "common/ConfigParser.h"
 #include "imgproc/ImageProcessor.h"
-#include "imgproc/FileFetch.h"
+#include "imgproc/frameio/VolumeDeformFileFetch.h"
 #include "core/SurfelGeometry.h"
 #include "core/WarpField.h"
 #include "core/render/Renderer.h"

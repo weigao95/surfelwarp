@@ -8,18 +8,18 @@
 #include "core/warp_solver/WarpSolver.h"
 #include "core/geometry/SurfelNodeDeformer.h"
 #include "visualization/Visualizer.h"
-
+#include "imgproc/frameio/FetchInterface.h"
+#include "imgproc/frameio/GenericFileFetch.h"
 
 #include <thread>
 #include <fstream>
-
 
 surfelwarp::SurfelWarpSerial::SurfelWarpSerial() {
 	//The config is assumed to be updated
 	const auto& config = ConfigParser::Instance();
 	
 	//Construct the image processor
-	FileFetch::Ptr fetcher = std::make_shared<FileFetch>(config.data_path());
+	FetchInterface::Ptr fetcher = std::make_shared<GenericFileFetch>(config.data_path());
 	m_image_processor = std::make_shared<ImageProcessor>(fetcher);
 	
 	//Construct the holder for surfel geometry
