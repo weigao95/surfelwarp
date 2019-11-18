@@ -38,3 +38,8 @@
 
 //Use dense image density term in the solver
 //#define USE_DENSE_IMAGE_DENSITY_TERM
+
+//Fix boost broken issue with cuda compile
+#ifdef __CUDACC__
+#define BOOST_PP_VARIADICS 0
+#endif
