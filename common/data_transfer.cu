@@ -207,9 +207,9 @@ PointCloud3f_Pointer surfelwarp::downloadPointCloud(const DeviceArray2D<float4>&
 	size_t valid_count = 0;
 	setPointCloudSize(point_cloud, total_size);
 	for (int idx = 0; idx < total_size; idx += 1) {
-		float x = host_ptr[idx].x * 1000;
-		float y = host_ptr[idx].y * 1000;
-		float z = host_ptr[idx].z * 1000;
+		float x = host_ptr[idx].x;
+		float y = host_ptr[idx].y;
+		float z = host_ptr[idx].z;
 		if (std::abs(x > 1e-3) || std::abs(y > 1e-3) || std::abs(z > 1e-3)) {
 			valid_count++;
 		}
