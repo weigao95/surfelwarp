@@ -315,7 +315,7 @@ void surfelwarp::ConfigParser::loadCameraIntrinsicFromJson(const void *json_ptr)
 	check_and_load("depth_principal_y", raw_depth_intrinsic.principal_y);
 	
 	check_and_load("rgb_focal_x", raw_rgb_intrinsic.focal_x);
-	check_and_load("rgb_focal_x", raw_rgb_intrinsic.focal_x);
+	check_and_load("rgb_focal_y", raw_rgb_intrinsic.focal_y);
 	check_and_load("rgb_principal_x", raw_rgb_intrinsic.principal_x);
 	check_and_load("rgb_principal_y", raw_rgb_intrinsic.principal_y);
 	
