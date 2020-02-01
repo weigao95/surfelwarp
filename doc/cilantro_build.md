@@ -39,10 +39,11 @@ And return to top-level directory:
 - `cd ../..`
 #### cilantro
 
-Adjust for your platform as necessary:
+Please use this commit `e9eb9f3c5c75710eb6cfeeb6313b5a73aaa06a28`. The commands are (adjust for your platform as necessary):
 
 - `git clone git@github.com:kzampog/cilantro.git`
-- `cd cilantro && mkdir build_static && mkdir install_static`
+- `cd cilantro && git checkout e9eb9f3c5c75710eb6cfeeb6313b5a73aaa06a28`
+- `mkdir build_static && mkdir install_static`
 - `cmake -DCMAKE_INSTALL_PREFIX=../install_static -DBUILD_SHARED_LIBRARIES=OFF -DPangolin_DIR=../Pangolin/install_static/lib/cmake/Pangolin ..`
 (If the desired Eigen is in a non-default location, also add:  `-DEigen3_DIR=<path to Eigen3Config.cmake, e.g. external/eigen3.4/install/share/eigen3/cmake>`)
 
