@@ -69,4 +69,4 @@ The code is re-factored and improved from the repo of our RSS paper. There are s
 
 ### Contact
 
-If you have any question or suggestion regarding this work, please send an email to weigao@mit.edu
+If you have any question or suggestion regarding this work, please send me an email.
