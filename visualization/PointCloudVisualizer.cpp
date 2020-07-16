@@ -14,8 +14,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #elif defined(WITH_CILANTRO)
 
-#include <cilantro/visualizer.hpp>
-#include <cilantro/common_renderables.hpp>
+#include <cilantro/visualization/visualizer.hpp>
+#include <cilantro/visualization/common_renderables.hpp>
 
 #endif
 
