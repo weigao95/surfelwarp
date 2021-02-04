@@ -52,7 +52,7 @@ If everything goes well, the executable would produce the reconstructed result p
 
 - How to use my own data?
 
-  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format of [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
+  You might override the [FetchInterface](https://github.com/weigao95/surfelwarp/blob/master/imgproc/frameio/FetchInterface.h) and use it with [ImageProcessor](https://github.com/weigao95/surfelwarp/blob/master/imgproc/ImageProcessor.h). If you don't have performance requirement, you can also convert your data into the format of [VolumeDeform](https://www.lgdv.tf.fau.de/publicationen/volumedeform-real-time-volumetric-non-rigid-reconstruction/).
 
 - How to deal with topology change?
 
