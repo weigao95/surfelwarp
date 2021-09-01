@@ -76,7 +76,7 @@ namespace surfelwarp {
 				}
 
 				//Correct the size
-				m_array = DeviceArray<T>(m_buffer.ptr(), prev_size);
+				m_array = DeviceArray<T>(m_buffer.ptr(), size);
 				return true;
 			} 
 			else {
