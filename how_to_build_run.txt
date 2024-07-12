@@ -1,0 +1,16 @@
+mkdir build && cd build
+
+#
+cmake -DCUDA_ARCH=61 -DVISUALIZATION_LIBRARY=cilantro -Dcilantro_DIR=../../cilantro/install_static/lib/cmake/cilantro -DPangolin_DIR=../../Pangolin/install_static/lib/cmake/Pangolin  ..
+
+# release
+cmake -DCUDA_ARCH=61 -DVISUALIZATION_LIBRARY=cilantro -Dcilantro_DIR=../../cilantro/install_static/lib/cmake/cilantro -DPangolin_DIR=../../Pangolin/install_static/lib/cmake/Pangolin -DCMAKE_BUILD_TYPE=Release ..
+
+# debug
+cmake -DCUDA_ARCH=61 -DVISUALIZATION_LIBRARY=cilantro -Dcilantro_DIR=../../cilantro/install_static/lib/cmake/cilantro -DPangolin_DIR=../../Pangolin/install_static/lib/cmake/Pangolin -DCMAKE_BUILD_TYPE=Debug ..
+
+make -j8
+
+cd ./apps/surfelwarp_app && ./surfelwarp_app ../../../test_data/boxing_config.json
+
+cd ./apps/surfelwarp_app && ./surfelwarp_app ../../../test_data/kinectdk_config.json

@@ -110,7 +110,7 @@ void surfelwarp::WarpSolver::setDenseDepthHandlerFullInput() {
 	m_dense_depth_handler->SetInputs(
 		node_se3,
 		m_knn_map,
-		m_observation.vertex_config_map,
+		m_observation.vertex_confid_map,
 		m_observation.normal_radius_map,
 		m_rendered_maps.reference_vertex_map,
 		m_rendered_maps.reference_normal_map,
@@ -245,7 +245,7 @@ void surfelwarp::WarpSolver::SetSparseFeatureHandlerFullInput() {
 	m_sparse_correspondence_handler->SetInputs(
 		node_se3,
 		m_knn_map,
-		m_observation.vertex_config_map,
+		m_observation.vertex_confid_map,
 		m_observation.correspondence_pixel_pairs,
 		m_rendered_maps.reference_vertex_map,
 		m_rendered_maps.index_map,

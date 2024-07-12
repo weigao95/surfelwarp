@@ -63,6 +63,7 @@ void main() {
         vs_out_normalized_rgb = vec4(color.xyz, 1.0);
 
 
+        // (xt) TODO: read Elastic Fusion
         //Compute the size of the surfel
         mat3 world2camera_R = mat3(world2camera);
         vec4 normRad = vec4(normalize(world2camera_R * warp_normal.xyz), reference_normal_radius.w);

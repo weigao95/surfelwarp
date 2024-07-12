@@ -57,7 +57,7 @@ void surfelwarp::SurfelWarpSerial::TestSolverWithRigidTransform() {
 		//Apply the warp field for debug
 		auto geometry = m_surfel_geometry[m_updated_geometry_index]->Geometry();
 		
-		auto vertex_map = observation.vertex_config_map;
+		auto vertex_map = observation.vertex_confid_map;
 		auto live_cloud = DeviceArray<float4>(geometry.live_vertex_confid.RawPtr(), geometry.live_vertex_confid.Size());
 		Visualizer::DrawMatchedCloudPair(vertex_map, live_cloud, camera2world);
 	};
@@ -156,7 +156,7 @@ void surfelwarp::SurfelWarpSerial::TestGeometryProcessing() {
 		auto geometry = m_surfel_geometry[m_updated_geometry_index]->Geometry();
 		
 		//The drawing method for solver
-		auto vertex_map = observation.vertex_config_map;
+		auto vertex_map = observation.vertex_confid_map;
 		auto live_cloud = DeviceArray<float4>(geometry.live_vertex_confid.RawPtr(), geometry.live_vertex_confid.Size());
 		Visualizer::DrawMatchedCloudPair(vertex_map, live_cloud, Eigen::Matrix4f::Identity());
 		
@@ -167,7 +167,7 @@ void surfelwarp::SurfelWarpSerial::TestGeometryProcessing() {
 		/*Visualizer::DrawFusedAppendedSurfelCloud(
 			geometry.live_vertex_confid.ArrayView(),
 			remaining_indicator,
-			observation.vertex_config_map,
+			observation.vertex_confid_map,
 			append_indicator,
 			world2camera
 		);*/
@@ -181,7 +181,7 @@ void surfelwarp::SurfelWarpSerial::TestGeometryProcessing() {
 		
 		//Also draw the matched colored cloud pair
 		/*Visualizer::DrawMatchedCloudPair(
-			observation.vertex_config_map, observation.color_time_map,
+			observation.vertex_confid_map, observation.color_time_map,
 			geometry.live_vertex_confid.ArrayView(), geometry.color_time.ArrayView(),
 			Eigen::Matrix4f::Identity()
 		);*/
@@ -197,7 +197,7 @@ void surfelwarp::SurfelWarpSerial::TestGeometryProcessing() {
 }
 
 
-void surfelwarp::SurfelWarpSerial::ProcessNextFrameNoReinit() {
+void surfelwarp::SurfelWarpSerial::ProcessNextFrameNoReinit(const ConfigParser& config) {
 	LOG(INFO) << "Current frame is " << m_frame_idx << " the updated geometry is " << m_updated_geometry_index;
 	
 	//Draw the required maps, assume the buffer is not mapped to cuda at input
@@ -356,19 +356,19 @@ void surfelwarp::SurfelWarpSerial::ProcessNextFrameNoReinit() {
 		//Visualizer::SaveValidIndexMap(solver_maps.index_map, -1, "validity_map.png");
 		
 		//The drawing method for solver
-		auto vertex_map = observation.vertex_config_map;
+		auto vertex_map = observation.vertex_confid_map;
 		auto live_cloud = DeviceArray<float4>(geometry.live_vertex_confid.RawPtr(), geometry.live_vertex_confid.Size());
 		Visualizer::DrawMatchedCloudPair(vertex_map, live_cloud, m_camera.GetCamera2WorldEigen());
 		
 		//The drawing of current geometry
-		Visualizer::DrawColoredPointCloud(observation.vertex_config_map, observation.color_time_map);
+		Visualizer::DrawColoredPointCloud(observation.vertex_confid_map, observation.color_time_map);
 		
 		//Draw of colored cloud
 		Visualizer::DrawColoredPointCloud(geometry.live_vertex_confid.ArrayView(), geometry.color_time.ArrayView());
 		
 		//Also draw the matched colored cloud pair
 		Visualizer::DrawMatchedCloudPair(
-			observation.vertex_config_map, observation.color_time_map,
+			observation.vertex_confid_map, observation.color_time_map,
 			geometry.live_vertex_confid.ArrayView(), geometry.color_time.ArrayView(),
 			m_camera.GetCamera2WorldEigen()
 		);
@@ -387,7 +387,7 @@ void surfelwarp::SurfelWarpSerial::ProcessNextFrameNoReinit() {
 	//Debug save
 	{
 		const auto with_recent = draw_recent;
-		const auto& save_dir = createOrGetDataDirectory(m_frame_idx);
+		const auto& save_dir = createOrGetDataDirectory(m_frame_idx, config.save_path());
 		saveCameraObservations(observation, save_dir);
 		saveSolverMaps(solver_maps, save_dir);
 
@@ -446,7 +446,7 @@ void surfelwarp::SurfelWarpSerial::TestRigidSolver() {
 		auto geometry = m_surfel_geometry[m_updated_geometry_index]->Geometry();
 		
 		//The drawing method for solver
-		auto vertex_map = observation.vertex_config_map;
+		auto vertex_map = observation.vertex_confid_map;
 		auto live_cloud = DeviceArray<float4>(geometry.live_vertex_confid.RawPtr(), geometry.live_vertex_confid.Size());
 		Visualizer::DrawMatchedCloudPair(vertex_map, live_cloud, toEigen(solved_world2camera.inverse()));
 	};
@@ -499,7 +499,7 @@ void surfelwarp::SurfelWarpSerial::TestSolver() {
 		//Apply the warp field for debug
 		auto geometry = m_surfel_geometry[m_updated_geometry_index]->Geometry();
 		
-		auto vertex_map = observation.vertex_config_map;
+		auto vertex_map = observation.vertex_confid_map;
 		auto live_cloud = DeviceArray<float4>(geometry.live_vertex_confid.RawPtr(), geometry.live_vertex_confid.Size());
 		Visualizer::DrawMatchedCloudPair(vertex_map, live_cloud, m_camera.GetCamera2WorldEigen());
 	};

@@ -74,7 +74,7 @@ int main() {
 	auto draw_func = [&]()->void {
 		//Visualizer::DrawColoredPointCloud(vertex, color_time);
 		//Visualizer::DrawColorTimeMap(maps.color_time_map);
-		//Visualizer::DrawPointCloudWithNormal(first_frame.vertex_config_map, first_frame.normal_radius_map);
+		//Visualizer::DrawPointCloudWithNormal(first_frame.vertex_confid_map, first_frame.normal_radius_map);
 		//Visualizer::DrawPointCloudWithNormal(maps.warp_vertex_map, maps.warp_normal_map);
 		//Visualizer::DrawPointCloudWithNormal(maps.reference_vertex_map, maps.reference_normal_map);
 		//Visualizer::DrawNormalMap(maps.warp_normal_map);

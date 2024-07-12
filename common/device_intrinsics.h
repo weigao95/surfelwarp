@@ -6,6 +6,11 @@
 
 #include <vector_functions.h>
 
+
+/*
+ * Possible reference: https://moderngpu.github.io/scan.html
+ */
+
 namespace surfelwarp {
 
     __device__ __forceinline__
@@ -16,7 +21,7 @@ namespace surfelwarp {
         asm volatile (
         "{.reg .f32 r0;"
                 ".reg .pred p;"
-                "shfl.up.b32 r0|p, %1, %2, 0;"
+                "shfl.sync.up.b32 r0|p, %1, %2, 0, -1;"
                 "@p add.f32 r0, r0, %1;"
                 "mov.f32 %0, r0;}"
         : "=f"(result) : "f"(x), "r"(offset));
@@ -44,7 +49,7 @@ namespace surfelwarp {
         asm volatile (
         "{.reg .s32 r0;"
             ".reg .pred p;"
-            "shfl.up.b32 r0|p, %1, %2, 0;"
+            "shfl.sync.up.b32 r0|p, %1, %2, 0, -1;"
             "@p add.s32 r0, r0, %1;"
             "mov.s32 %0, r0;}"
         : "=r"(result) : "r"(x), "r"(offset));
@@ -71,7 +76,7 @@ namespace surfelwarp {
         asm volatile (
         "{.reg .u32 r0;"
             ".reg .pred p;"
-            "shfl.up.b32 r0|p, %1, %2, 0;"
+            "shfl.sync.up.b32 r0|p, %1, %2, 0, -1;"
             "@p add.u32 r0, r0, %1;"
             "mov.u32 %0, r0;}"
         : "=r"(result) : "r"(x), "r"(offset));

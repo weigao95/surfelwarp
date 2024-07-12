@@ -1,6 +1,7 @@
 #pragma once
 #include "math/Quaternion.hpp"
 #include "math/vector_ops.hpp"
+#include "math/numeric_limits.hpp"
 
 namespace surfelwarp {
 
@@ -122,7 +123,7 @@ namespace surfelwarp {
 		{
 			return DualNumber(q0.w(), q1.w());
 		}
-		
+
 		__host__ __device__ DualQuaternion conjugate() const
 		{
 			return{ q0.conjugate(), q1.conjugate() };
@@ -175,6 +176,28 @@ namespace surfelwarp {
 			return mat34(r, t);
 		}
 		
+		// simpler (and faster) version
+		// according to '4. Implemention Notes' in 'Geometric Skinning with Approximate Dual Quaternion Blending'
+		// 
+		__host__ __device__ mat34 mat34_f() {
+			const float inv_norm = q0.norm_inversed();
+			mat33 r = (q0 * inv_norm).matrix();	
+			float3 t = (2 * (q1 * inv_norm) * (q0 * inv_norm).conjugate()).vec();
+			return mat34(r, t);
+		}
+		__host__ __device__ void convert2(float3& axis_angle, float3& trans) {
+			const float inv_norm = q0.norm_inversed();
+			Quaternion q0_normed = q0 * inv_norm;
+			float sin_v;
+			if(q0_normed.w() >= 1 - numeric_limits<float>::epsilon()){
+				sin_v = numeric_limits<float>::epsilon();
+			}else{
+				sin_v = 1 / sqrtf(1 - q0_normed.w() * q0_normed.w());
+			}
+			axis_angle = q0_normed.vec() * sin_v;
+			trans = (2 * (q1 * inv_norm) * q0_normed.conjugate()).vec();
+		}
+
 		//This might mutate the value
 		__host__ __device__ mat34 se3_matrix() {
 			this->normalize();
@@ -206,6 +229,11 @@ namespace surfelwarp {
 		const Quaternion quat0 = _dn.q0*_dq.q0;
 		const Quaternion quat1 = _dn.q0*_dq.q1 + _dn.q1*_dq.q0;
 		return{ quat0, quat1 };
+	}
+
+	__host__ __forceinline__ std::ostream& operator<<(std::ostream & os, const DualQuaternion & dq){
+		os << dq.q0 << dq.q1;
+		return os;
 	}
 
 	__host__ __device__ __forceinline__ DualQuaternion averageDualQuaternion(

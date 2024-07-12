@@ -9,13 +9,18 @@
 #include "common/common_texture_utils.h"
 #include "imgproc/segmentation/ForegroundSegmenter.h"
 #include "imgproc/segmentation/ForegroundSegmenterOffline.h"
+#include "ForegroundSegmenterOffline.h"
 
 
 surfelwarp::ForegroundSegmenterOffline::ForegroundSegmenterOffline() {
 	//Check the directory
 	const auto& config = ConfigParser::Instance();
-	m_mask_dir = config.data_path() / "mask";
-	SURFELWARP_CHECK(boost::filesystem::exists(m_mask_dir));
+	if (config.getIOMode() != "realsense" || !config.use_segmentation()) {
+		// no implementation
+	} else {
+		m_mask_dir = config.data_path() / "clip_mask";
+		SURFELWARP_CHECK(boost::filesystem::exists(m_mask_dir));
+	}
 	
 	//Correct the size of the image
 	m_frame_idx = 1;
@@ -53,7 +58,7 @@ boost::filesystem::path surfelwarp::ForegroundSegmenterOffline::getSegmentMaskPa
 	//Construct the file_name
 	char frame_idx_str[20];
 	sprintf(frame_idx_str, "%06d", frame_idx);
-	std::string file_name = "frame-";
+	std::string file_name = "clip_mask/frame-";
 	file_name += std::string(frame_idx_str);
 	file_name += ".mask.png";
 	
@@ -64,8 +69,14 @@ boost::filesystem::path surfelwarp::ForegroundSegmenterOffline::getSegmentMaskPa
 
 void surfelwarp::ForegroundSegmenterOffline::Segment(cudaStream_t stream) {
 	//Read the image from file
-	const auto file_name = getSegmentMaskPath(m_frame_idx);
-	m_foreground_mask_host = cv::imread(file_name.string(), CV_ANYCOLOR | CV_ANYDEPTH);
+	ConfigParser& config = ConfigParser::Instance();
+
+	if (config.use_segmentation()) {
+		const auto file_name = getSegmentMaskPath(m_frame_idx);
+		m_foreground_mask_host = cv::imread(file_name.string(), CV_ANYCOLOR | CV_ANYDEPTH);
+	} else {
+		m_foreground_mask_host = cv::Mat(m_clip_rows, m_clip_cols, CV_8UC1, cv::Scalar(255));
+	}
 	
 	//Upload to texture
 	cudaSafeCall(cudaMemcpyToArrayAsync(
@@ -86,6 +97,3 @@ void surfelwarp::ForegroundSegmenterOffline::Segment(cudaStream_t stream) {
 		stream
 	);
 }
-
-
-

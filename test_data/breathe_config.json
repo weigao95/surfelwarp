@@ -1,0 +1,25 @@
+{
+    "io_mode": "VolumeDeformFileFetch",
+    "clip_far":1300,
+    "clip_near":50,
+    "data_prefix":"/home/roboticlab/Desktop/Maihn/surfelwarp/test_data/dataset/breathe",
+    "depth_focal_x":390.580,"depth_focal_y":390.580,"depth_principal_x":320.929,"depth_principal_y":240.267,
+    "gpc_model_path":"/home/rvclab/dev/surfelwarp/test_data/sintel_small_speed",
+    "image_cols":640,"image_rows":480,
+    "start_frame":0,
+    "num_frame":300,
+    "rgb_focal_x":390.580,"rgb_focal_y":390.580,"rgb_principal_x":320.929,"rgb_principal_y":240.267,
+    "use_periodic_reinit":false,
+    "reinit_period":50,
+    "use_density":true,
+    "use_foreground":false,
+    "use_offline_foreground":false,
+    "use_segmentation": false,
+    "use_downsample":true,
+    "offline_rendering": false,
+    "show_online": true,
+    "save_live_albedo_map": true,
+    "save_se3": false,
+    "save_path": "/home/roboticlab/Desktop/Maihn/surfelwarp/result/breathe"
+}
+

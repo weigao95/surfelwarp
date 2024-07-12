@@ -11,6 +11,7 @@
 #include <device_launch_parameters.h>
 #include <common/Constants.h>
 #include "hashing/TicketBoardSet.cuh"
+#include "ForegroundSegmenterPermutohedral.h"
 
 
 namespace surfelwarp { namespace device {
@@ -360,6 +361,7 @@ void surfelwarp::ForegroundSegmenterPermutohedral::Segment(cudaStream_t stream)
 	upsampleFilterForegroundMask(stream);
 }
 
+
 cudaTextureObject_t surfelwarp::ForegroundSegmenterPermutohedral::ForegroundMask() const {
 	return m_foreground_mask_collect_upsampled.texture;
 }
@@ -368,8 +370,10 @@ cudaTextureObject_t surfelwarp::ForegroundSegmenterPermutohedral::FilterForegrou
 	return m_filter_foreground_mask_collect_upsampled.texture;
 }
 
-cudaTextureObject_t surfelwarp::ForegroundSegmenterPermutohedral::SubsampledForegroundMask() const {
-	return m_segmented_mask_collect_subsampled.texture;
+
+cudaTextureObject_t surfelwarp::ForegroundSegmenterPermutohedral::SubsampledForegroundMask() const
+{
+    return m_segmented_mask_collect_subsampled.texture;
 }
 
 void surfelwarp::ForegroundSegmenterPermutohedral::initMeanfieldUnaryEnergy(cudaStream_t stream) {

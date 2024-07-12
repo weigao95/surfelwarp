@@ -1,3 +1,6 @@
 file(GLOB MATH_SRC *.h *.hpp *.cpp *.cu)
 source_group("src" FILES ${MATH_SRC})
-cuda_add_library(math_lib ${MATH_SRC})
+cuda_add_library(surfelwarp_math_lib ${MATH_SRC})
+if(NONRIGID_RECON_MODE STREQUAL "Debug")
+    target_link_libraries(surfelwarp_math_lib -fsanitize=address -static-libasan)
+endif()

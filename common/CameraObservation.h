@@ -16,7 +16,7 @@ namespace surfelwarp {
 
 		//The geometry member
 		cudaTextureObject_t filter_depth_img;
-		cudaTextureObject_t vertex_config_map;
+		cudaTextureObject_t vertex_confid_map;
 		cudaTextureObject_t normal_radius_map;
 		
 		//The color member

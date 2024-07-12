@@ -135,6 +135,11 @@ namespace surfelwarp {
 		
 		return q;
 	}
+
+	__host__ __forceinline__ std::ostream & operator<<(std::ostream & os, const Quaternion & q){
+		os << q.x() << "\t" << q.y() << "\t" << q.z() << "\t" << q.w() << "\t" ;
+		return os;
+	}
 	
 	__host__ __device__ __forceinline__ float dot(const Quaternion& q0, const Quaternion& q1) {
 		return dot(q0.q0, q1.q0);

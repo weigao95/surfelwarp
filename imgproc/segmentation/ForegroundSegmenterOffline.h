@@ -24,6 +24,7 @@ namespace surfelwarp {
 		boost::filesystem::path m_mask_dir;
 		boost::filesystem::path getSegmentMaskPath(int frame_idx);
 		
+		
 		//The only used input is frame idx
 		int m_frame_idx;
 		unsigned m_clip_rows, m_clip_cols;

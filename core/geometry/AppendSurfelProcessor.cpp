@@ -53,7 +53,7 @@ void surfelwarp::AppendSurfelProcessor::SetInputs(
 	const KNNSearch::Ptr& live_node_skinner,
 	const DeviceArrayView<ushort2>& pixel_coordinate
 ) {
-	m_observation.vertex_confid_map = observation.vertex_config_map;
+	m_observation.vertex_confid_map = observation.vertex_confid_map;
 	m_observation.normal_radius_map = observation.normal_radius_map;
 	m_observation.color_time_map = observation.color_time_map;
 	m_camera2world = camera2world;

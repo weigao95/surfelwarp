@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <Eigen/Eigen>
 #include <device_launch_parameters.h>
+#include "point_cloud_typedefs.h"
 
 
 cv::Mat surfelwarp::downloadDepthImage(const DeviceArray2D<unsigned short>& image_gpu) {

@@ -24,6 +24,7 @@
 #define CUDA_CHECKERR_SYNC 1
 
 //The constants need to accessed on device
+// #define d_max_num_nodes 4096
 #define d_max_num_nodes 4096
 #define d_node_radius 0.025f // [meter]
 #define d_node_radius_square (d_node_radius * d_node_radius)

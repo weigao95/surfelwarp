@@ -79,6 +79,7 @@ namespace surfelwarp { namespace device {
 					const float4 depth_v4 = tex2D<float4>(observation_maps.vertex_map, img_coord.x, img_coord.y);
 					const float4 depth_n4 = tex2D<float4>(observation_maps.normal_map, img_coord.x, img_coord.y);
 
+					// If a point in blank(e.g. background), its model_n = 0, thus correspondence check will failed.
 					//Check correspondence
 					if(dotxyz(model_n, depth_n4) < 0.8f || squared_distance(model_v, depth_v4) > (0.01f * 0.01f) || is_zero_vertex(depth_v4)) {
 						//Pass

@@ -1,6 +1,5 @@
 #include "common/common_texture_utils.h"
 #include "visualization/Visualizer.h"
-
 #include <device_launch_parameters.h>
 
 #include <opencv2/opencv.hpp>

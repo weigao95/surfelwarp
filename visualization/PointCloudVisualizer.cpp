@@ -12,12 +12,21 @@
 
 #ifdef WITH_PCL
 #include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/visualization/cloud_viewer.h>
 #elif defined(WITH_CILANTRO)
 
 #include <cilantro/visualization/visualizer.hpp>
 #include <cilantro/visualization/common_renderables.hpp>
+#include "Visualizer.h"
 
 #endif
+
+void  keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* viewer_void) {
+    pcl::visualization::PCLVisualizer* viewer = static_cast<pcl::visualization::PCLVisualizer*>(viewer_void);
+    if (event.getKeySym() == "q" && event.keyDown()) {
+        viewer->close();
+    }
+}
 
 /* The point cloud drawing methods
 */
@@ -118,8 +127,8 @@ void surfelwarp::Visualizer::SavePointCloud(const DeviceArrayView<float4> cloud,
     SavePointCloud(point_vec, path);
 }
 
-/* The point cloud with normal
-*/
+ /* The point cloud with normal
+   */
 void surfelwarp::Visualizer::DrawPointCloudWithNormal(
         const PointCloud3f_Pointer &point_cloud
 #ifdef WITH_PCL
@@ -262,11 +271,12 @@ void surfelwarp::Visualizer::SavePointCloudWithNormal(cudaTextureObject_t vertex
 void surfelwarp::Visualizer::DrawColoredPointCloud(const PointCloud3fRGB_Pointer &point_cloud) {
     std::string window_title = "3D Viewer";
 #ifdef WITH_PCL
-    boost::shared_ptr <pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer(window_title));
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer(window_title));
     viewer->setBackgroundColor(0, 0, 0);
     pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(point_cloud);
     viewer->addPointCloud<pcl::PointXYZRGB>(point_cloud, rgb, "sample cloud");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud");
+    viewer->registerKeyboardCallback(keyboardEventOccurred, (void*)&viewer);
     while (!viewer->wasStopped()) {
         viewer->spinOnce(100);
     }

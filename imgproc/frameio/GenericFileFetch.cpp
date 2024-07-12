@@ -41,22 +41,23 @@ surfelwarp::GenericFileFetch::GenericFileFetch(const fs::path& data_path, std::s
 	for (auto& path : sorted_paths) {
 		if (FilenameIndicatesDepthImage(path.filename().string(), extension)) {
 			int frame_number = GetFrameNumber(path);
-			if (frame_number != m_depth_image_paths.size()) {
+			if (m_depth_image_paths.end() != m_depth_image_paths.find(frame_number)) {
 				throw std::runtime_error("Unexpected depth frame number encountered");
 			}
-			m_depth_image_paths.push_back(path);
+			m_depth_image_paths[frame_number]= path;
 		} else if (FilenameIndicatesRGBImage(path.filename().string(), extension)) {
 			int frame_number = GetFrameNumber(path);
-			if (frame_number != m_rgb_image_paths.size()) {
+			if (m_rgb_image_paths.end() != m_rgb_image_paths.find(frame_number)) {
 				throw std::runtime_error("Unexpected RGB frame number encountered");
 			}
-			m_rgb_image_paths.push_back(path);
+			m_rgb_image_paths[frame_number] = path;
 		} else if (!force_no_masks && FilenameIndicatesMaskImage(path.filename().string(), extension)) {
 			int frame_number = GetFrameNumber(path);
-			if (frame_number != m_mask_image_paths.size()) {
+			if (m_mask_image_paths.end() != m_mask_image_paths.find(frame_number)) {
+				// xt: i did not check if it is correct
 				unexpected_mask_frame_number = true;
 			}
-			m_mask_image_paths.push_back(path);
+			m_mask_image_paths[frame_number] = path;
 		}
 	}
 
@@ -128,22 +129,28 @@ int surfelwarp::GenericFileFetch::GetFrameNumber(const surfelwarp::GenericFileFe
 
 void surfelwarp::GenericFileFetch::FetchDepthImage(size_t frame_idx, cv::Mat& depth_img)
 {
-	path file_path = this->m_depth_image_paths[frame_idx];
-	//Read the image
-	depth_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
+	if (m_depth_image_paths.find(frame_idx) == m_depth_image_paths.end()){
+		char fid[20];
+		sprintf(fid, "%06d", frame_idx);
+		throw std::runtime_error("File does not exist when fetch depth image: " + std::string(fid));
+	} else {
+		path file_path = this->m_depth_image_paths[frame_idx];
+		//Read the image
+		depth_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
 
-	if (this->m_use_masks) {
-		mask_mutex.lock();
-		// Apply mask to image
-		if (this->m_mask_buffer_ix != frame_idx) {
-			m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
-			                                 CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
-			m_mask_buffer_ix = frame_idx;
+		if (this->m_use_masks) {
+			mask_mutex.lock();
+			// Apply mask to image
+			if (this->m_mask_buffer_ix != frame_idx) {
+				m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
+												CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
+				m_mask_buffer_ix = frame_idx;
+			}
+			cv::Mat masked;
+			depth_img.copyTo(masked, m_mask_image_buffer);
+			mask_mutex.unlock();
+			depth_img = masked;
 		}
-		cv::Mat masked;
-		depth_img.copyTo(masked, m_mask_image_buffer);
-		mask_mutex.unlock();
-		depth_img = masked;
 	}
 }
 
@@ -154,24 +161,40 @@ void surfelwarp::GenericFileFetch::FetchDepthImage(size_t frame_idx, void* depth
 
 void surfelwarp::GenericFileFetch::FetchRGBImage(size_t frame_idx, cv::Mat& rgb_img)
 {
-	path file_path = this->m_rgb_image_paths[frame_idx];
-	//Read the image
-	rgb_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
-	if (this->m_use_masks) {
-		mask_mutex.lock();
-		if (this->m_mask_buffer_ix != frame_idx) {
-			m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
-			                                 CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
-			m_mask_buffer_ix = frame_idx;
+	if (m_rgb_image_paths.find(frame_idx) == m_rgb_image_paths.end()){
+		char fid[20];
+		sprintf(fid, "%06d", frame_idx);
+		throw std::runtime_error("File does not exist when fetch rgb image: " + std::string(fid));
+	} else {
+		path file_path = this->m_rgb_image_paths[frame_idx];
+		//Read the image
+		rgb_img = cv::imread(file_path.string(), CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
+		if (this->m_use_masks) {
+			mask_mutex.lock();
+			if (this->m_mask_buffer_ix != frame_idx) {
+				m_mask_image_buffer = cv::imread(this->m_mask_image_paths[frame_idx].string(),
+												CV_ANYCOLOR | CV_ANYDEPTH); // NOLINT(hicpp-signed-bitwise)
+				m_mask_buffer_ix = frame_idx;
+			}
+			cv::Mat masked;
+			rgb_img.copyTo(masked, m_mask_image_buffer);
+			mask_mutex.unlock();
+			rgb_img = masked;
 		}
-		cv::Mat masked;
-		rgb_img.copyTo(masked, m_mask_image_buffer);
-		mask_mutex.unlock();
-		rgb_img = masked;
 	}
 }
 
 void surfelwarp::GenericFileFetch::FetchRGBImage(size_t frame_idx, void* rgb_img)
 {
 
+}
+
+void surfelwarp::GenericFileFetch::FetchDepthAndRGBImage(size_t frame_id, cv::Mat& depth_img, cv::Mat& rgb_img){
+	std::cout << "Error: not implemented yet." << std::endl;
+	exit(-1);
+}
+
+void surfelwarp::GenericFileFetch::DownSampleImage()
+{
+	
 }

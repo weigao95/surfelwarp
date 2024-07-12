@@ -1,0 +1,7 @@
+file(GLOB SURFELWARP_THREAD_SRC *.h *.hpp *.cpp *.cu)
+cuda_add_executable(surfelwarp_thread ${SURFELWARP_THREAD_SRC})
+target_link_libraries(surfelwarp_thread surfelwarp_common_lib)
+target_link_libraries(surfelwarp_thread surfelwarp_math_lib)
+target_link_libraries(surfelwarp_thread surfelwarp_imgproc_lib)
+target_link_libraries(surfelwarp_thread surfelwarp_core_lib)
+target_link_libraries(surfelwarp_thread surfelwarp_visualization_lib)

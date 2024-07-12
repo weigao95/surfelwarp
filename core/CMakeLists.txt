@@ -7,21 +7,22 @@ source_group("render" FILES ${CORE_RENDER_SRC})
 source_group("geometry" FILES ${CORE_GEOMETRY_SRC})
 source_group("warp_solver" FILES ${CORE_SOLVER_SRC})
 
+add_subdirectory(render/imgui)
+
 #Add core library
-cuda_add_library(core_lib ${CORE_SRC} ${CORE_RENDER_SRC} ${CORE_GEOMETRY_SRC} ${CORE_SOLVER_SRC})
-target_link_libraries(core_lib ${OpenCV_LIBRARIES})
-target_link_libraries(core_lib ${CUDA_CUBLAS_LIBRARIES})
-target_link_libraries(core_lib common_lib)
-target_link_libraries(core_lib math_lib)
-target_link_libraries(core_lib visualization_lib)
-target_link_libraries(core_lib imgproc_lib)
-target_link_libraries(core_lib solver_lib)
+cuda_add_library(surfelwarp_core_lib ${CORE_SRC} ${CORE_RENDER_SRC} ${CORE_GEOMETRY_SRC} ${CORE_SOLVER_SRC})
+target_link_libraries(surfelwarp_core_lib
+        ${OpenCV_LIBRARIES}
+        ${CUDA_CUBLAS_LIBRARIES}
+        surfelwarp_common_lib
+        surfelwarp_math_lib
+        surfelwarp_visualization_lib
+        surfelwarp_imgproc_lib
+        surfelwarp_solver_lib
+        surfelwarp_imgui_lib
+        glfw
+)
 
-#Link the graphic lib
-target_link_libraries(core_lib glfw)
-
-
-if(WIN32)
-    #In MSVC, alignments must be extendable for Eigen vectorizations
-	target_compile_definitions(core_lib PUBLIC _ENABLE_EXTENDED_ALIGNED_STORAGE)
-endif(WIN32)
+if(NONRIGID_RECON_MODE STREQUAL "Debug")
+    target_link_libraries(surfelwarp_core_lib -fsanitize=address -static-libasan)
+endif()

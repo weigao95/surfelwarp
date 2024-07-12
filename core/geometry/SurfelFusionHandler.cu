@@ -406,7 +406,7 @@ void surfelwarp::SurfelFusionHandler::prepareFuserArguments(void *fuser_ptr) {
 	auto& fuser = *((device::FusionAndMarkAppendedObservationSurfelDevice*)fuser_ptr);
 	
 	//The observation maps
-	fuser.observation_maps.vertex_time_map = m_observation.vertex_config_map;
+	fuser.observation_maps.vertex_time_map = m_observation.vertex_confid_map;
 	fuser.observation_maps.normal_radius_map = m_observation.normal_radius_map;
 	fuser.observation_maps.color_time_map = m_observation.color_time_map;
 	

@@ -1,4 +1,5 @@
 #pragma once
+#define WITH_PCL
 
 #ifdef WITH_PCL
 #include <pcl/point_cloud.h>

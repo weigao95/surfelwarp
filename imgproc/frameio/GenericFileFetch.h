@@ -48,6 +48,8 @@ namespace surfelwarp
 		//Should be rgb, in CV_8UC3 format
 		void FetchRGBImage(size_t frame_idx, cv::Mat& rgb_img) override;
 		void FetchRGBImage(size_t frame_idx, void* rgb_img) override;
+		void FetchDepthAndRGBImage(size_t frame_idx, cv::Mat& depth_img, cv::Mat& rgb_img) override;
+		void DownSampleImage() override;
 
 	private:
 		static int GetFrameNumber(const path& filename);
@@ -56,9 +58,9 @@ namespace surfelwarp
 		static bool FilenameIndicatesRGBImage(const path& filename, const std::string& valid_extension);
 		static bool FilenameIndicatesMaskImage(const path& filename, const std::string& valid_extension);
 
-		std::vector<path> m_rgb_image_paths;
-		std::vector<path> m_depth_image_paths;
-		std::vector<path> m_mask_image_paths;
+		std::map<int, path> m_rgb_image_paths;
+		std::map<int, path> m_depth_image_paths;
+		std::map<int, path> m_mask_image_paths;
 
 		size_t m_mask_buffer_ix;
 		cv::Mat m_mask_image_buffer;

@@ -156,7 +156,7 @@ void surfelwarp::ReinitRemainingSurfelMarker::prepareMarkerArguments(void * raw_
 	marker.live_geometry.color_time = m_surfel_geometry.color_time.RawPtr();
 	marker.live_geometry.surfel_knn = m_surfel_geometry.surfel_knn.RawPtr();
 	
-	marker.camera_observation.vertex_map = m_observation.vertex_config_map;
+	marker.camera_observation.vertex_map = m_observation.vertex_confid_map;
 	marker.camera_observation.normal_map = m_observation.normal_radius_map;
 	marker.camera_observation.foreground_mask = m_observation.foreground_mask;
 

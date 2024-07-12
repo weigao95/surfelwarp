@@ -181,7 +181,7 @@ surfelwarp::ReinitAppendedObservationSurfel surfelwarp::GeometryReinitProcessor:
 	appended_observation.validity_indicator_prefixsum = prefixsum_array.ptr();
 	
 	//The texture object from observation
-	appended_observation.depth_vertex_confid_map = m_observation.vertex_config_map;
+	appended_observation.depth_vertex_confid_map = m_observation.vertex_confid_map;
 	appended_observation.depth_normal_radius_map = m_observation.normal_radius_map;
 	appended_observation.observation_color_time_map = m_observation.color_time_map;
 	

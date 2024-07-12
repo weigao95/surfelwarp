@@ -22,7 +22,7 @@ uniform vec2 confid_time_threshold; // x is confidence threshold, y is time thre
 vec3 project_point(vec3 p)
 {
     return vec3(( (((intrinsic.z * p.x) / p.z) + intrinsic.x) - (width_height_maxdepth_currtime.x * 0.5)) / (width_height_maxdepth_currtime.x * 0.5),
-                ((((intrinsic.w * p.y) / p.z) + intrinsic.y) - (width_height_maxdepth_currtime.y * 0.5)) / (width_height_maxdepth_currtime.y * 0.5),
+                 - ((((intrinsic.w * p.y) / p.z) + intrinsic.y) - (width_height_maxdepth_currtime.y * 0.5)) / (width_height_maxdepth_currtime.y * 0.5),
                 p.z / (width_height_maxdepth_currtime.z + 0.05));
 }
 

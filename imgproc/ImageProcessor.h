@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <texture_types.h>
+#include "common/TimeLogger.h"
 #include "common/macro_utils.h"
 #include "common/common_types.h"
 #include "common/common_utils.h"
@@ -66,7 +67,7 @@ namespace surfelwarp {
         FetchInterface::Ptr m_image_fetcher;
 
         //The opencv matrix and the underline memory for image fetching
-        cv::Mat m_depth_img, m_rgb_img, m_rgb_img_prev;
+        cv::Mat m_depth_img, m_rgb_img, m_rgb_img_prev, m_rgb_img_stored;
         void* m_depth_buffer_pagelock;
         void* m_rgb_buffer_pagelock;
 		void* m_rgb_prev_buffer_pagelock;
@@ -81,6 +82,7 @@ namespace surfelwarp {
 		void FetchRGBPrevFrame(size_t curr_frame_idx);
         const cv::Mat& RawDepthImageCPU() const { return m_depth_img; }
         const cv::Mat& RawRGBImageCPU() const { return m_rgb_img; }
+		const cv::Mat& RawRGBImagePrevCPU() const { return m_rgb_img_prev; }
 
 
 

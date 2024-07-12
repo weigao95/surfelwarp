@@ -5,6 +5,7 @@
 #include "common/macro_utils.h"
 #include "core/geometry/SurfelNodeDeformer.h"
 #include <device_launch_parameters.h>
+#include "visualization/Visualizer.h"
 
 
 namespace surfelwarp { namespace device {
@@ -22,6 +23,7 @@ namespace surfelwarp { namespace device {
 		float4* live_node_coordinate
 	) {
 		const int idx = threadIdx.x + blockDim.x * blockIdx.x;
+		if(idx >= canonical_vertex_confid.Size() + canonical_nodes_coordinate.Size()) return;
 		ushort4 knn; float4 weight;
 		float4  vertex;
 		float4 normal = make_float4(0, 0, 0, 0);
@@ -141,7 +143,6 @@ void surfelwarp::SurfelNodeDeformer::ForwardWarpSurfelsAndNodes(
 		live_normal, 
 		warp_field.m_live_node_coords.Ptr()
 	);
-
 	//Sync and check error
 #if defined(CUDA_DEBUG_SYNC_CHECK)
 	cudaSafeCall(cudaStreamSynchronize(stream));

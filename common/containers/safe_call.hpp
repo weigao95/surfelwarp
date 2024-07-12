@@ -54,7 +54,8 @@ namespace pcl
         static inline void ___cudaSafeCall(cudaError_t err, const char *file, const int line, const char *func = "")
         {
             if (cudaSuccess != err){
-                std::cout << "Error: " << "\t" << file << ":" << line << std::endl;
+                std::cout << "Error: " << err << "\t" << file << ":" << line << std::endl;
+                std::cout << "Reason: " << "\t" << cudaGetErrorString(err) << std::endl;
                 exit(0);
             }
         }

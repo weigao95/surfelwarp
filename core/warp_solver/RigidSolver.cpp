@@ -33,7 +33,7 @@ void surfelwarp::RigidSolver::SetInputMaps(
 	m_solver_maps.live_vertex_map = solver_maps.warp_vertex_map;
 	m_solver_maps.live_normal_map = solver_maps.warp_normal_map;
 	
-	m_observation.vertex_map = observation.vertex_config_map;
+	m_observation.vertex_map = observation.vertex_confid_map;
 	m_observation.normal_map = observation.normal_radius_map;
 	
 	m_curr_world2camera = init_world2camera;
